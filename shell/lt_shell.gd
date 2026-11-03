@@ -190,6 +190,8 @@ func bind_document(document: LtDocument) -> void:
 	document.message.connect(show_message)
 	document.dirty_changed.connect(set_dirty)
 	document.opened.connect(func(_resource: Resource) -> void: name_edit.text = document.file_name())
+	# Nom nettoyé (« Boss Room » -> boss_room) ou renommé depuis la bibliothèque.
+	document.saved.connect(func(_path: String) -> void: name_edit.text = document.file_name())
 	save_requested.connect(func() -> void: document.save(name_edit.text))
 	name_edited.connect(func(_text: String) -> void: document.dirty = true)
 
