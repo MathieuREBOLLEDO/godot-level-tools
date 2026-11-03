@@ -77,6 +77,18 @@ func test_shell_left_groups_and_enter_saves() -> void:
 	assert_eq(saves[0], 1, "Enter in the name saves")
 
 
+func test_shell_add_header() -> void:
+	var shell: LtShell = add_test_node(LtShell.new())
+	var back: Button = Button.new()
+	shell.add_header(back, "start")
+	var fields: HFlowContainer = HFlowContainer.new()
+	shell.add_header(fields, "left", true)
+	assert_eq(back.get_index(), 0, "start: before the name")
+	assert_lt(fields.get_index(), shell._spacer.get_index(), "left: before the spacer")
+	assert_eq(fields.size_flags_horizontal, Control.SIZE_EXPAND_FILL)
+	assert_false(shell._spacer.visible, "an expanding control takes the free space")
+
+
 func test_shell_confirm() -> void:
 	var shell: LtShell = add_test_node(LtShell.new())
 	var done: Array[int] = [0]

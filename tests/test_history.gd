@@ -74,6 +74,21 @@ func test_custom_snapshots() -> void:
 	assert_eq(state.cells, [1])
 
 
+func test_checkpoint_before_a_change() -> void:
+	var document: Resource = SampleDocument.new()
+	var history: LtHistory = LtHistory.for_resource(document)
+	history.checkpoint()
+	document.count = 7
+	history.checkpoint()
+	document.count = 8
+	history.undo()
+	assert_eq(document.count, 7)
+	history.undo()
+	assert_eq(document.count, 3)
+	history.redo()
+	assert_eq(document.count, 7)
+
+
 func test_keys() -> void:
 	var document: Resource = SampleDocument.new()
 	var history: LtHistory = LtHistory.for_resource(document)

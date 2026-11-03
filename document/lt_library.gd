@@ -209,6 +209,8 @@ func _option(caption: String, items: Array[String]) -> OptionButton:
 	var option: OptionButton = OptionButton.new()
 	option.focus_mode = Control.FOCUS_NONE
 	option.clip_text = true
+	# Largeur de la colonne, pas du choix le plus long : deux filtres par ligne.
+	option.fit_to_longest_item = false
 	option.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for item: String in items:
 		option.add_item(item)

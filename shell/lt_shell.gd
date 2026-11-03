@@ -123,6 +123,21 @@ func add_group(left: bool = false) -> HBoxContainer:
 	return group
 
 
+## Ajoute [param control] à l'en-tête : [param where] « start » (avant le
+## nom : bouton Retour), « left » (après le nom), « right » (à droite).
+## [param expand] : il prend la place libre (des champs qui passent à la ligne).
+func add_header(control: Control, where: String = "left", expand: bool = false) -> void:
+	actions.add_child(control)
+	match where:
+		"start":
+			actions.move_child(control, 0)
+		"left":
+			actions.move_child(control, _spacer.get_index())
+	if expand:
+		control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_spacer.visible = false
+
+
 ## Demande confirmation (« Move level_01.tres to the trash? ») ;
 ## [param on_confirmed] n'est appelé que sur OK.
 func confirm(text: String, ok_text: String, on_confirmed: Callable, title: String = "") -> void:

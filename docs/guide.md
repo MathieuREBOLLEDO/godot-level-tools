@@ -13,12 +13,25 @@ shell.set_help("click: place · right click: pick · wheel: zoom")
 add_child(shell)
 ```
 
+## Étendre LtShell
+Un éditeur peut étendre LtShell (BatEmUp, Gringo, RoguePinball). LtShell a
+des membres et fonctions privés (`_build_header`, `_build_body`,
+`_build_footer`, `_empty`, `_help`, `_spacer`, `_confirm`...) : une
+sous-classe ne doit pas utiliser ces noms (GDScript refuse une signature
+différente). Préférer `_build_level_header`, `_fill_...`.
+Ctrl+S : `save_shortcut = false` le laisse à l'éditeur Godot (un plugin qui
+enregistre par `_save_external_data`).
+
 ## En-tête
 ```gdscript
 var files := shell.add_group()             # un groupe = boutons serrés + filet
 LtTheme.button(files, "New", "New level", func(): document.create(MyLevel.new(), "new_level"))
 var save := LtTheme.button(files, "Save", "Ctrl+S", func(): document.save(shell.name_edit.text))
 shell.set_primary(save)                    # un seul par écran
+shell.add_group(true)                      # groupe à gauche, après le nom
+shell.add_header(back_button, "start")     # avant le nom (Retour)
+shell.add_header(fields, "left", true)     # des champs qui prennent la place libre
+shell.confirm("Move x.tres to the trash?", "Move to trash", on_ok)
 ```
 
 ## Bibliothèque
@@ -42,6 +55,14 @@ shell.history.changed(true)      # curseur glissé : un pas pour la série
 ```
 Instantané maison (état fait de plusieurs ressources) :
 `LtHistory.new(capture_callable, restore_callable)`.
+Autre façon : `history.checkpoint()` AVANT la modification (début d'un coup
+de pinceau, éditeur de niveaux de Gringo) ; ne pas mélanger avec changed().
+
+## Renommer depuis la bibliothèque
+`library.renamable = true` (clic droit sur une carte > Rename) et
+`library.rename_requested.connect(document.rename_file)`. Laisser faux quand
+un autre fichier retient le chemin (cartes du monde de Gringo, ordre des
+pièces de DungeonTactics).
 
 ## Réglages
 `LtValueField.create(resource, &"speed", "Speed", "help", " m/s")` : bornes

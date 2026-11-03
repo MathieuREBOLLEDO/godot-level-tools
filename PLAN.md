@@ -28,9 +28,19 @@ chaque migration, docs/inventory/).
       d'en-tête à gauche, confirmation, Rename depuis la bibliothèque.
 - [x] BatEmUp migré (Levels, Bullet Patterns) le 2026-11-03 : vérifié par
       capture et script ; pas commité dans BatEmUp (branche gameplay).
-- [ ] Inventaires Gringo (gringo_map_level.md : Q1-Q4) et Pinball /
-      DungeonTactics (pinball_dungeontactics.md : P1-P4, D1-D4) : à valider.
-- [ ] Migrations Gringo, RoguePinball, DungeonTactics après validation.
+- [x] Inventaires Gringo, RoguePinball, DungeonTactics validés (les
+      recommandations).
+- [x] Gringo migré (Map, Level, navigateur, live edit ; textes en LtText
+      avec table française game/level/level_tools_text.gd) : captures avant /
+      après identiques, script de vérification, 239 tests du jeu.
+- [x] RoguePinball migré (Tables : Table, Modules ; annuler de l'éditeur
+      Godot gardé) et DungeonTactics migré (Map painter, Dungeons, Rooms ;
+      annuler ajouté à Dungeons et Rooms, pipette corrigée) : vérifiés par
+      script et captures. Non vérifié : les clics réels dans l'éditeur Godot.
+- [ ] Rien n'est commité dans les jeux (BatEmUp, ProjetGringo, RoguePinball,
+      DungeonTactics) ni dans project_init : à faire sur demande.
+- [ ] Brique à venir si besoin : pied avec statut persistant et bouton
+      (Map painter de DungeonTactics passe aujourd'hui par footer_label).
 - [x] design_tokens.cfg de Gringo copié dans RoguePinball et DungeonTactics
       (mêmes valeurs que leurs défauts : rien ne change à l'écran).
 - [ ] Gringo : le fichier de la dernière carte reste user://map_editor.cfg
