@@ -62,6 +62,20 @@ chaque migration, docs/inventory/).
 - [ ] Pas de règle pour BatEmUp Patterns, Map painter, Dungeons (aucune
       évidente) ; le puzzle : phase 5.
 
+## Phase 4a : disposition commune (faite le 2026-11-03, à valider)
+- [x] Règle écrite (DESIGN.md, « Disposition commune ») : en-tête vue →
+      annuler → essayer → fichiers en icône seule avec bulle → Enregistrer
+      (icône + texte, seul principal) ; aide des gestes dans le pied.
+- [x] Briques : LtIcons (icônes de Gringo + supprimer, annuler, refaire,
+      enregistrer sous), LtBackdrop (grille discrète et vignettage derrière
+      le canvas de toute coque).
+- [x] Appliqué : BatEmUp Levels et Patterns, Pinball Table et Modules,
+      DungeonTactics Map painter (annuler, refaire, Enregistrer dans
+      l'en-tête ; aide et état dans le pied), Dungeons (légende dans le
+      pied), Rooms (aide dans le pied). Gringo inchangé (référence).
+- [x] plugin.gd : tests/.gdignore dans un jeu sans test runner (plus
+      d'erreur « TestCase » à l'ouverture de l'éditeur).
+- [ ] 4b : canvas sur grille commun (vue, palette, gestes), à discuter.
 ## Phases suivantes
 4 canvas sur grille, 5 ensemble ↔ pièce, liens, puzzle
 (détail dans le plan approuvé, résumé dans CLAUDE.md).

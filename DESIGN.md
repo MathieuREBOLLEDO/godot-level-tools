@@ -31,6 +31,23 @@ l'éditeur Godot, pour que les éditeurs des jeux s'y fondent.
 - État vide : une phrase qui dit quoi faire, et le bouton qui le fait.
 - Explications en bulle (tooltip) plutôt qu'en texte dans l'écran.
 
+## Disposition commune (référence : éditeur de niveaux de Gringo)
+Tous les écrans rangent leur en-tête et leur pied dans le même ordre :
+- En-tête, à gauche : Retour (icône, s'il y a un écran parent), surtitre et
+  nom, « non enregistré », puis les réglages du document s'il y en a.
+- En-tête, à droite, de gauche à droite, un groupe par filet :
+  1. outils de vue et navigation (Frame, Reload, Rooms…) : texte ;
+  2. Annuler, Refaire : icône seule (LtIcons.UNDO, REDO) ;
+  3. Essayer (et ce qui l'accompagne, Assign) : icône + texte, LtIcons.PLAY ;
+  4. fichiers : Nouveau, Ouvrir, Dupliquer, Enregistrer sous, Supprimer en
+     icône seule avec une bulle (LtIcons), puis Enregistrer, le seul bouton
+     principal, icône + texte, tout à droite.
+- Pied : à gauche les mesures et la légende du canvas, à droite le message
+  puis l'aide des gestes (set_help(), jamais dans une colonne ou sous le
+  canvas), et le compteur des problèmes.
+- Bouton en icône seule : `LtTheme.button(groupe, "", bulle, action, icône)`,
+  la bulle dit l'action et son raccourci.
+
 ## Animations
 Rares : survol des cartes de la bibliothèque (fondu), retour d'une action
 dans le pied. Rien qui bouge sans raison.

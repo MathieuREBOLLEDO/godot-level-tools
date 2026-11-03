@@ -36,6 +36,8 @@ var dirty_label: Label
 var actions: HBoxContainer
 var left: PanelContainer
 var center: Control
+## Fond commun derrière [member center] (grille discrète, vignettage).
+var backdrop: LtBackdrop
 var right: PanelContainer
 var legend: HBoxContainer
 var footer_label: Label
@@ -341,6 +343,8 @@ func _build_body() -> Control:
 	var stack: Control = Control.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_inner_split.add_child(stack)
+	backdrop = LtBackdrop.new()
+	stack.add_child(backdrop)
 	center = Control.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	stack.add_child(center)
