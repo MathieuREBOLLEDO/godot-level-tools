@@ -85,8 +85,18 @@ Colonne « Après » : **en gras**, ce qui change pour toi. « = » : identique.
 - Thème : ToolsTheme → LtTheme (mêmes jetons, mêmes variantes) ;
   ValueField → LtValueField (même code).
 
-## Changements que tu dois valider
+## Changements validés (2026-11-03)
 1. Ouverture du dernier niveau au lieu du premier.
-2. Bibliothèque en cartes avec une ligne de détail.
+2. Bibliothèque en cartes avec une ligne de détail ; en plus : clic droit
+   sur une carte > Rename (renomme le fichier, même s'il n'est pas ouvert).
 3. Messages du pied à droite, 4 s, puis l'aide (comme l'éditeur de carte de
    Gringo).
+
+## Vérification après migration (2026-11-03)
+- Capture avant / après : même disposition, mêmes contrôles.
+- Script de vérification (sans souris) : un niveau s'ouvre au lancement,
+  dupliquer ouvre la copie, ajouter une vague, « unsaved », annuler,
+  refaire, Entrée enregistre sous le nom de l'en-tête (nettoyé), renommer
+  depuis la bibliothèque, demande d'essai lue par le jeu.
+- Non vérifié à la main : les clics réels dans l'onglet de l'éditeur Godot
+  (frise, aperçu, carte Rename), le lancement réel du jeu par Try in game.

@@ -40,6 +40,16 @@ Deux choix :
   player_settings.tres ne changent plus. Affecter un pattern se fait alors
   dans l'Inspecteur (ou un bouton « Assign » à part).
 
-## Changements que tu dois valider
-1. Les trois de l'éditeur de niveaux (dernier ouvert, cartes, pied).
-2. Essayer : A ou B.
+## Changements validés (2026-11-03)
+1. Les trois de l'éditeur de niveaux (dernier ouvert, cartes, pied, Rename).
+2. Essayer : **B**. Try in game ne touche plus aux réglages (le jeu prend le
+   pattern en mémoire pour la partie, level_runner.gd) ; nouveau bouton
+   **Assign** : donne le pattern au boss ou au joueur pour de bon.
+3. Bibliothèque élargie à 240 px (le détail « cycle endless » tient).
+
+## Vérification après migration (2026-11-03)
+- Capture avant / après : même disposition ; Assign ajouté à droite.
+- Script : un pattern s'ouvre au lancement ; une demande d'essai donne le
+  pattern au boss pour la partie, enemy_settings.tres reste identique sur
+  le disque.
+- Non vérifié à la main : Assign dans l'éditeur Godot, le lancement réel.

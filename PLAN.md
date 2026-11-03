@@ -23,10 +23,14 @@ chaque migration, docs/inventory/).
       sous-module, rien à y ajouter.
 
 ## Phase 2 : migrations (BatEmUp, Gringo, RoguePinball, DungeonTactics)
-- [x] Inventaires BatEmUp (docs/inventory/batemup_levels.md,
-      batemup_patterns.md), écrits le 2026-11-03 : à valider.
-- [ ] À ajouter aux briques avant la migration de BatEmUp : Entrée dans le
-      nom = enregistrer, groupes d'en-tête à gauche, confirmation (corbeille).
+- [x] Inventaires BatEmUp validés (Try des patterns : choix B + Assign).
+- [x] Briques complétées : Entrée dans le nom = enregistrer, groupes
+      d'en-tête à gauche, confirmation, Rename depuis la bibliothèque.
+- [x] BatEmUp migré (Levels, Bullet Patterns) le 2026-11-03 : vérifié par
+      capture et script ; pas commité dans BatEmUp (branche gameplay).
+- [ ] Inventaires Gringo (gringo_map_level.md : Q1-Q4) et Pinball /
+      DungeonTactics (pinball_dungeontactics.md : P1-P4, D1-D4) : à valider.
+- [ ] Migrations Gringo, RoguePinball, DungeonTactics après validation.
 - [x] design_tokens.cfg de Gringo copié dans RoguePinball et DungeonTactics
       (mêmes valeurs que leurs défauts : rien ne change à l'écran).
 - [ ] Gringo : le fichier de la dernière carte reste user://map_editor.cfg
