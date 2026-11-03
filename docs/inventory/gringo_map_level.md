@@ -25,6 +25,11 @@ voisins et flèches, live edit (seulement le thème change).
 Fichiers des niveaux et des cartes : logique de LevelData et WorldMap
 gardée (un nom changé fait un nouveau fichier, comme aujourd'hui).
 
+## Décisions (validées le 2026-11-03)
+Q1 oui (LtText + table française). Q2 partout dans l'onglet sauf champ
+texte. Q3 oui. Q4 enregistrer d'abord (un nouveau niveau jamais enregistré :
+confirmation avant de le perdre).
+
 ## Questions
 - **Q1. Textes en français ?** Aujourd'hui tout est en anglais en dur.
   Avec les briques, chaque texte passe par LtText.t() et une table française

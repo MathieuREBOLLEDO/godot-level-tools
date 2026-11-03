@@ -30,7 +30,11 @@ Ici : ce qui passe sur les briques, et les décisions à prendre.
 | Textes de Dungeons et Rooms (tr() sur la table de traduction du jeu) | restent sur la table du jeu | aucun |
 | Annuler dans Dungeons et Rooms | **D2** (n'existe pas aujourd'hui) | |
 
-## Décisions
+## Décisions (validées le 2026-11-03 : les recommandations)
+P1 : garder l'historique de l'éditeur Godot. P2, D1 : level_tools/language.
+P3 : enregistrer d'abord avant Ouvrir / Nouveau. P4 : les deux corrections.
+D2 : ajouter Annuler (LtHistory). D4 : corriger.
+
 - **P1. Annuler dans Pinball.** Aujourd'hui : l'historique de l'éditeur
   Godot (Ctrl+Z de l'éditeur ; couvre aussi les changements faits dans
   l'Inspecteur). Ma recommandation : **le garder** (LtHistory perdrait
