@@ -1,2 +1,5 @@
-# Écrit par plugin.gd dans un jeu sans test runner.
+# Écrit par plugin.gd dans un jeu sans test runner ; Godot efface alors les
+# .uid des tests cachés : ils ne sont pas suivis (les tests se chargent par
+# leur chemin).
 tests/.gdignore
+tests/*.uid
