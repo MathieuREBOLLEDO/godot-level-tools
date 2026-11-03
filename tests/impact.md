@@ -21,6 +21,8 @@ Les tests tournent dans un jeu qui a l'addon et le test runner
 | Bibliothèque (document/lt_library*.gd) | `-Filter library` | listes des éditeurs |
 | Coque (shell/) | `-Filter shell` | tous les éditeurs |
 | Validateur (validator/) | `-Filter test_validator` | compteur du pied de tous les éditeurs ; tests des niveaux finis des jeux |
+| Vue (view/) | `-Filter view` | canvas de Gringo Level, Pinball Modules, Rooms ; vérifier les gestes à la main |
+| Palette (palette/) | `-Filter palette` | palettes de Pinball Modules et des Rooms (ordre et favoris dans user://) |
 | Essayer (playtest/) | `-Filter playtest` | lancement du jeu depuis les éditeurs ; côté jeu, la lecture de la demande |
 
 Non couvert par les tests : la mise à la corbeille (LtFiles.trash, elle

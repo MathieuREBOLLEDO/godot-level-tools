@@ -45,6 +45,9 @@ de tâche, le mettre à jour).
   LtLibrary et ses cartes. undo/ : LtHistory. fields/ : LtValueField.
 - playtest/ : LtPlaytest (Essayer en jeu).
 - validator/ : LtValidator, LtProblem (règles du jeu, compteur du pied).
+- view/ : LtView (zoom, déplacement, cadrage, rotation : gestes communs).
+- palette/ : LtPalette, LtPaletteSlot (gomme, pages, touches, favoris).
+- icons/ : LtIcons (icônes des en-têtes et de la palette).
 - tests/ : tests et impact.md.
 - docs/guide.md : comment assembler un éditeur. docs/inventory/ :
   inventaires des éditeurs avant migration.

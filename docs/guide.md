@@ -83,6 +83,26 @@ Pied : « 1 error(s) · 2 warning(s) » (rouge qui bat, orange, ou « No
 problem » en vert), la liste en bulle ; un clic montre le problème suivant.
 Tests du jeu : `validator.errors_in(chemins, load)` rend les erreurs
 (« fichier : message ») ; les avertissements ne font pas échouer.
+## Canvas sur grille (vue et palette)
+Le canvas garde son dessin et confie la vue à un LtView :
+```gdscript
+var view: LtView = LtView.new()   # dans _ready : view.changed.connect(queue_redraw)
+func _gui_input(event):
+	if view.handle_input(event):  # molette, Maj + molette, milieu, Espace + clic
+		accept_event()
+		return
+	# ... peindre avec view.cell_at(event.position)
+func _draw():
+	view.fit(Rect2(Vector2.ZERO, Vector2(grid)), size)   # cadre tant qu'on n'a pas zoomé
+	draw_rect(view.cell_rect(cell), color)
+```
+L'éditeur passe les touches quand la souris est sur le canvas :
+`view.handle_key(event)` (F, R, Espace) puis `palette.handle_key(event)`.
+Palette : `palette.setup(items, ["Terrain", "Objects"], "Eraser")`, un élément
+= {id, name, page, tooltip, draw (Callable(case, rect)) ou color + letter} ;
+`item_selected(id)` ("" : la gomme), `select(id, false)` pour la pipette ;
+`store_path` (user://) garde l'ordre et les favoris.
+
 ## Essayer en jeu
 Éditeur : `LtPlaytest.play(document.resource, "res://game/main.tscn")`.
 Jeu, au démarrage : `var level = LtPlaytest.consume("level")` (null : partie

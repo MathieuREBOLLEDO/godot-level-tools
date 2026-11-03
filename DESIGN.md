@@ -51,3 +51,21 @@ Tous les écrans rangent leur en-tête et leur pied dans le même ordre :
 ## Animations
 Rares : survol des cartes de la bibliothèque (fondu), retour d'une action
 dans le pied. Rien qui bouge sans raison.
+
+## Gestes communs des canvas (LtView, LtPalette)
+| Geste | Effet |
+|---|---|
+| Clic gauche (glisser) | poser, peindre |
+| Clic droit | pipette : l'élément de la case devient l'outil |
+| Molette | zoom centré sur le curseur |
+| Maj + molette, R, Maj + R | tourner l'élément choisi |
+| Bouton du milieu glissé, Espace + clic | déplacer la vue |
+| F | tout le contenu dans la vue (elle suit ensuite la taille du canvas) |
+| 1 à 9 puis 0 | cases de la page affichée de la palette |
+| Clic droit sur une case de la palette | favori ; glisser une case : ordre |
+
+Pour effacer : la gomme, en tête de palette. À l'ouverture, le contenu
+tient dans la vue. Les touches passent au canvas quand la souris est dessus
+(dans l'éditeur Godot, elles servent ailleurs). Exceptions : l'onglet Table
+de Pinball (on y déplace des éléments, clic droit glissé = vue) et le live
+edit de Gringo (molette = tourner, clic droit = effacer).

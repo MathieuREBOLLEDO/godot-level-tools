@@ -75,8 +75,20 @@ chaque migration, docs/inventory/).
       pied), Rooms (aide dans le pied). Gringo inchangé (référence).
 - [x] plugin.gd : tests/.gdignore dans un jeu sans test runner (plus
       d'erreur « TestCase » à l'ouverture de l'éditeur).
-- [ ] 4b : canvas sur grille commun (vue, palette, gestes), à discuter.
-## Phases suivantes
+
+## Phase 4b : gestes communs des canvas (faite le 2026-11-03, à valider)
+- [x] Briques : LtView (zoom au curseur, déplacer, F, Maj + molette et R
+      pour tourner, cadrage automatique) et LtPalette / LtPaletteSlot
+      (reprise de la palette de Gringo). 3 tests.
+- [x] DungeonTactics Rooms : vue, palette (3 pages), clic droit = pipette,
+      gomme = case libre. Map painter : F et clic droit = pipette.
+- [x] Pinball Modules : vue commune (Espace + clic, Maj + molette), palette
+      commune (favoris, ordre, touche 0) ; section_palette.gd retiré.
+- [x] Gringo Level : vue commune (molette = zoom, Maj + molette / R =
+      tourner, déplacer, F).
+- [x] Tableau des gestes : docs/inventory/gestes_4b.md.
+- [ ] Palette de Gringo encore à elle (calques, tiroir du sol) : la passer sur
+      LtPalette plus tard si utile.## Phases suivantes
 4 canvas sur grille, 5 ensemble ↔ pièce, liens, puzzle
 (détail dans le plan approuvé, résumé dans CLAUDE.md).
 ## Décisions

@@ -7,6 +7,15 @@ extends RefCounted
 const TEXTS: Dictionary[String, String] = {
 	# Coque
 	"unsaved": "non enregistré",
+	# Palette
+	"Favorites": "Favoris",
+	"Favorites (right click to add)": "Favoris (clic droit pour ajouter)",
+	"Right click an element of another page to add it here.": "Clic droit sur un élément d'une autre page pour l'ajouter ici.",
+	"Right click on the grid: pick an element": "Clic droit sur la grille : prendre un élément",
+	"Right click: favorite · drag: reorder": "Clic droit : favori · glisser : ordre",
+	"Previous page": "Page précédente",
+	"Next page": "Page suivante",
+	"Eraser": "Gomme",
 	# Problèmes (validateur)
 	"%d error(s)": "%d erreur(s)",
 	"%d warning(s)": "%d avertissement(s)",
