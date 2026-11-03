@@ -128,6 +128,30 @@ func trash_current() -> bool:
 	return true
 
 
+## Renomme le fichier [param file_path] (carte de la bibliothèque) ; le
+## document ouvert est enregistré sous ce nom, un autre est seulement
+## renommé sur le disque.
+func rename_file(file_path: String, wanted_name: String) -> bool:
+	if file_path == path:
+		return save(wanted_name)
+	var cleaned: String = LtFiles.clean_name(wanted_name)
+	if cleaned == "":
+		message.emit(LtText.t("The name is empty."), "bad")
+		return false
+	var target: String = dir + cleaned + extension
+	if FileAccess.file_exists(target):
+		message.emit(LtText.t("%s already exists: choose another name.") % target.get_file(), "bad")
+		return false
+	var cached: Resource = ResourceLoader.get_cached_ref(file_path) if ResourceLoader.has_cached(file_path) else null
+	var error: Error = LtFiles.rename(cached, file_path, target)
+	if error != OK:
+		message.emit(LtText.t("Cannot rename (%s).") % error_string(error), "bad")
+		return false
+	message.emit(LtText.t("Renamed %s.") % target.get_file(), "good")
+	files_changed.emit()
+	return true
+
+
 ## Enregistre ; [param wanted_name] (le nom de l'en-tête) renomme le fichier
 ## s'il a changé (« » : garde le nom).
 func save(wanted_name: String = "") -> bool:

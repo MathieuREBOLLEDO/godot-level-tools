@@ -38,6 +38,8 @@ var history: LtHistory = null
 ## Ctrl+S émet save_requested (faux : laisser Ctrl+S à l'éditeur Godot).
 var save_shortcut: bool = true
 
+var _spacer: Control
+var _confirm: ConfirmationDialog
 var _empty: CenterContainer
 var _empty_label: Label
 var _empty_actions: HBoxContainer
@@ -101,9 +103,39 @@ func set_dirty(dirty: bool) -> void:
 	dirty_label.visible = dirty
 
 
-## Nouveau groupe de boutons dans l'en-tête, séparé du précédent par un filet.
-func add_group() -> HBoxContainer:
-	return LtTheme.group(actions)
+## Nouveau groupe de boutons dans l'en-tête, séparé du précédent par un filet ;
+## à droite par défaut, [param left] : à gauche, après le nom.
+func add_group(left: bool = false) -> HBoxContainer:
+	if not left:
+		return LtTheme.group(actions)
+	var index: int = _spacer.get_index()
+	if actions.get_child(index - 1) is HBoxContainer:
+		var rule: VSeparator = VSeparator.new()
+		rule.add_theme_stylebox_override(&"separator", LtTheme.box(LtTheme.INK_LINE, Color.TRANSPARENT, 0, Vector4.ZERO, Vector4(1, 0, 0, 0)))
+		actions.add_child(rule)
+		actions.move_child(rule, index)
+		index += 1
+	var group: HBoxContainer = HBoxContainer.new()
+	group.add_theme_constant_override(&"separation", 4)
+	group.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	actions.add_child(group)
+	actions.move_child(group, index)
+	return group
+
+
+## Demande confirmation (« Move level_01.tres to the trash? ») ;
+## [param on_confirmed] n'est appelé que sur OK.
+func confirm(text: String, ok_text: String, on_confirmed: Callable, title: String = "") -> void:
+	if _confirm == null:
+		_confirm = ConfirmationDialog.new()
+		add_child(_confirm)
+	for connection: Dictionary in _confirm.confirmed.get_connections():
+		_confirm.confirmed.disconnect(connection.callable)
+	_confirm.title = title
+	_confirm.dialog_text = text
+	_confirm.ok_button_text = ok_text
+	_confirm.confirmed.connect(on_confirmed, CONNECT_ONE_SHOT)
+	_confirm.popup_centered()
 
 
 ## Le bouton principal de l'écran (Enregistrer...) : plein, dans l'accent.
@@ -178,13 +210,17 @@ func _build_header() -> Control:
 	name_edit.theme_type_variation = LtTheme.TITLE
 	name_edit.custom_minimum_size.x = 260.0
 	name_edit.text_changed.connect(func(text: String) -> void: name_edited.emit(text))
+	# Entrée dans le nom : enregistrer (sous ce nom).
+	name_edit.text_submitted.connect(func(_text: String) -> void: save_requested.emit())
 	identity.add_child(name_edit)
 	dirty_label = LtTheme.label("●  " + LtText.t("unsaved"), LtTheme.DIM)
 	dirty_label.add_theme_color_override(&"font_color", LtTheme.ACCENT)
 	dirty_label.size_flags_vertical = Control.SIZE_SHRINK_END
 	dirty_label.visible = false
 	actions.add_child(dirty_label)
-	LtTheme.spacer(actions)
+	_spacer = Control.new()
+	_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	actions.add_child(_spacer)
 	return band
 
 

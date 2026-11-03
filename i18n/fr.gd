@@ -18,6 +18,8 @@ const TEXTS: Dictionary[String, String] = {
 	"Cannot open %s.": "Impossible d'ouvrir %s.",
 	"Cannot delete %s (%s).": "Impossible de supprimer %s (%s).",
 	"%s moved to the trash.": "%s mis à la corbeille.",
+	"Renamed %s.": "Renommé en %s.",
+	"Rename…": "Renommer…",
 	# Bibliothèque
 	"search": "rechercher",
 	"Sort by": "Trier par",

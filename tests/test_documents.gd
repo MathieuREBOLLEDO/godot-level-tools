@@ -120,6 +120,36 @@ func test_document_reopens_the_last_one() -> void:
 	assert_eq(again.path, DIR + "b.tres")
 
 
+func test_document_renames_a_file_from_the_library() -> void:
+	_write("other")
+	var document: LtDocument = LtDocument.new(DIR)
+	document.create(SampleDocument.new(), "open_one")
+	assert_true(document.rename_file(DIR + "other.tres", "Second Level"))
+	assert_true(FileAccess.file_exists(DIR + "second_level.tres"))
+	assert_false(FileAccess.file_exists(DIR + "other.tres"))
+	assert_false(document.rename_file(DIR + "second_level.tres", "open_one"), "name taken")
+	assert_true(document.rename_file(DIR + "open_one.tres", "renamed_open"), "the open one is saved under the name")
+	assert_eq(document.path, DIR + "renamed_open.tres")
+
+
+func test_library_card_rename() -> void:
+	_write("one")
+	var library: LtLibrary = add_test_node(LtLibrary.new())
+	library.renamable = true
+	library.set_paths(LtFiles.list(DIR))
+	var asked: Array = []
+	library.rename_requested.connect(func(path: String, new_name: String) -> void: asked.append([path, new_name]))
+	var card: LtLibraryCard = _cards(library)[0]
+	assert_true(card.renamable)
+	card.start_rename()
+	await frames(1)
+	var edit: LineEdit = card.get_child(card.get_child_count() - 1) as LineEdit
+	if assert_not_null(edit, "name field on the card"):
+		assert_eq(edit.text, "one")
+		edit.text_submitted.emit("two")
+	assert_eq(asked, [[DIR + "one.tres", "two"]])
+
+
 # --- LtLibrary ---
 
 func test_library_search_filter_and_sort() -> void:

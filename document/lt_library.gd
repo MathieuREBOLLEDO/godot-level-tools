@@ -17,6 +17,9 @@ extends VBoxContainer
 
 signal picked(path: String)
 signal activated(path: String)
+## Nouveau nom tapé sur une carte (clic droit > Rename, si [member renamable]) ;
+## LtDocument.rename_file() le fait.
+signal rename_requested(path: String, new_name: String)
 
 ## (path) -> donnée de l'élément (par défaut : la ressource, relue du disque).
 var load_item: Callable = func(path: String) -> Variant: return LtFiles.load_fresh(path)
@@ -29,6 +32,9 @@ var empty_text: String = LtText.t("No item yet.")
 var no_match_text: String = LtText.t("Nothing matches the filters.")
 var layout: LtLibraryCard.Layout = LtLibraryCard.Layout.LIST
 var selected_path: String = ""
+## Clic droit sur une carte > Rename. Faux quand d'autres fichiers retiennent
+## le chemin (une carte du monde qui liste ses niveaux par chemin).
+var renamable: bool = false
 
 ## Rangée du haut : le jeu y met son surtitre et ses boutons (Import...).
 var header: HBoxContainer
@@ -148,7 +154,9 @@ func refresh() -> void:
 	for path: String in shown:
 		var card: LtLibraryCard = LtLibraryCard.new(path, describe.call(path, _data[path]), layout)
 		card.selected = path == selected_path
+		card.renamable = renamable
 		card.picked.connect(_on_picked)
+		card.rename_requested.connect(func(key: String, new_name: String) -> void: rename_requested.emit(key, new_name))
 		card.activated.connect(func(key: String) -> void: activated.emit(key))
 		_cards.add_child(card)
 	count_label.text = count_text.call(_data.size(), shown.size())

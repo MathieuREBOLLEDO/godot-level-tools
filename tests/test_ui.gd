@@ -60,6 +60,34 @@ func test_shell_builds_header_body_footer() -> void:
 	assert_false(shell._empty.visible)
 
 
+func test_shell_left_groups_and_enter_saves() -> void:
+	var shell: LtShell = add_test_node(LtShell.new())
+	var right: HBoxContainer = shell.add_group()
+	var first: HBoxContainer = shell.add_group(true)
+	var second: HBoxContainer = shell.add_group(true)
+	var spacer: int = shell._spacer.get_index()
+	assert_lt(first.get_index(), spacer, "left of the spacer")
+	assert_lt(second.get_index(), spacer)
+	assert_gt(second.get_index(), first.get_index(), "in the order added")
+	assert_true(shell.actions.get_child(second.get_index() - 1) is VSeparator, "rule between left groups")
+	assert_gt(right.get_index(), spacer)
+	var saves: Array[int] = [0]
+	shell.save_requested.connect(func() -> void: saves[0] += 1)
+	shell.name_edit.text_submitted.emit("x")
+	assert_eq(saves[0], 1, "Enter in the name saves")
+
+
+func test_shell_confirm() -> void:
+	var shell: LtShell = add_test_node(LtShell.new())
+	var done: Array[int] = [0]
+	shell.confirm("Move a.tres to the trash?", "Move to trash", func() -> void: done[0] += 1)
+	shell._confirm.confirmed.emit()
+	shell.confirm("Again?", "OK", func() -> void: done[0] += 10)
+	shell._confirm.confirmed.emit()
+	assert_eq(done[0], 11, "each confirm calls only its own action")
+	shell._confirm.hide()
+
+
 func test_shell_footer_message_then_help() -> void:
 	var shell: LtShell = add_test_node(LtShell.new())
 	shell.set_help("click: select")

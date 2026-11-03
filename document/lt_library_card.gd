@@ -11,6 +11,8 @@ extends Control
 
 signal picked(key: String)
 signal activated(key: String)
+## Nouveau nom tapé sur la carte (clic droit > Rename, si [member renamable]).
+signal rename_requested(key: String, new_name: String)
 
 enum Layout { LIST, GRID }
 
@@ -36,9 +38,13 @@ var selected: bool = false:
 	set(value):
 		selected = value
 		queue_redraw()
+## Clic droit > Rename : le nom se change sur la carte.
+var renamable: bool = false
 
 var _hover: float = 0.0 # 0 à 1, animé
 var _hovering: bool = false
+var _menu: PopupMenu = null
+var _name_edit: LineEdit = null
 
 
 ## [param info] : title, detail, thumbnail, badge, badge_color, dimmed,
@@ -75,12 +81,57 @@ func _process(delta: float) -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	var button: InputEventMouseButton = event as InputEventMouseButton
-	if button == null or button.button_index != MOUSE_BUTTON_LEFT or not button.pressed:
+	if button == null or not button.pressed:
 		return
-	if button.double_click:
-		activated.emit(key)
-	else:
-		picked.emit(key)
+	if button.button_index == MOUSE_BUTTON_RIGHT and renamable:
+		_open_menu(get_screen_position() + button.position)
+		accept_event()
+	elif button.button_index == MOUSE_BUTTON_LEFT:
+		if button.double_click:
+			activated.emit(key)
+		else:
+			picked.emit(key)
+
+
+## Champ de saisie sur le nom de la carte ; Entrée valide, Échap annule.
+func start_rename() -> void:
+	if _name_edit != null:
+		return
+	_name_edit = LineEdit.new()
+	_name_edit.text = key.get_file().get_basename()
+	_name_edit.select_all_on_focus = true
+	_name_edit.set_anchors_and_offsets_preset(Control.PRESET_HCENTER_WIDE)
+	_name_edit.offset_left = PAD + 4.0
+	_name_edit.offset_right = -PAD
+	_name_edit.text_submitted.connect(func(text: String) -> void: _end_rename(text))
+	_name_edit.focus_exited.connect(func() -> void: _end_rename(""))
+	_name_edit.gui_input.connect(func(event: InputEvent) -> void:
+		var key_event: InputEventKey = event as InputEventKey
+		if key_event != null and key_event.pressed and key_event.keycode == KEY_ESCAPE:
+			_end_rename(""))
+	add_child(_name_edit)
+	_name_edit.grab_focus()
+
+
+func _end_rename(text: String) -> void:
+	if _name_edit == null:
+		return
+	var edit: LineEdit = _name_edit
+	_name_edit = null
+	edit.queue_free()
+	var wanted: String = text.strip_edges()
+	if wanted != "" and wanted != key.get_file().get_basename():
+		rename_requested.emit(key, wanted)
+
+
+func _open_menu(at: Vector2) -> void:
+	if _menu == null:
+		_menu = PopupMenu.new()
+		_menu.add_item(LtText.t("Rename…"), 0)
+		_menu.id_pressed.connect(func(_id: int) -> void: start_rename.call_deferred())
+		add_child(_menu)
+	_menu.position = Vector2i(at)
+	_menu.popup()
 
 
 func _get_drag_data(_at: Vector2) -> Variant:
