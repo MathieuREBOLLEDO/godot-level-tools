@@ -33,6 +33,7 @@ static var SAND_DIM: Color
 static var ACCENT: Color
 static var GOOD: Color
 static var BAD: Color
+static var WARN: Color
 static var INFO: Color
 
 static var UI_FONT_NAMES: PackedStringArray
@@ -71,6 +72,7 @@ static func reload() -> void:
 	ACCENT = _color("accent", "70bbfa")
 	GOOD = _color("good", "45d17c")
 	BAD = _color("bad", "ff786b")
+	WARN = _color("warn", "ffcc66")
 	INFO = _color("info", "a5b6cc")
 	UI_FONT_NAMES = _token("fonts", "ui", PackedStringArray(["@engine"]))
 	MONO_FONT_NAMES = _token("fonts", "mono", PackedStringArray(["JetBrains Mono", "Cascadia Mono", "Consolas", "Menlo"]))
@@ -98,6 +100,7 @@ static func color(key: String) -> Color:
 		"accent": return ACCENT
 		"good": return GOOD
 		"bad": return BAD
+		"warn": return WARN
 		"info": return INFO
 	return SAND
 
@@ -447,6 +450,8 @@ static func editor_color(key: String) -> Variant:
 			return editor_theme.get_color(&"success_color", &"Editor")
 		"bad":
 			return editor_theme.get_color(&"error_color", &"Editor")
+		"warn":
+			return editor_theme.get_color(&"warning_color", &"Editor")
 	return null
 
 

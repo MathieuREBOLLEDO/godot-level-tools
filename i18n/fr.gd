@@ -7,6 +7,11 @@ extends RefCounted
 const TEXTS: Dictionary[String, String] = {
 	# Coque
 	"unsaved": "non enregistré",
+	# Problèmes (validateur)
+	"%d error(s)": "%d erreur(s)",
+	"%d warning(s)": "%d avertissement(s)",
+	"No problem": "Aucun problème",
+	"Click: show the next one": "Clic : montrer le suivant",
 	# Document
 	"Opened %s.": "%s ouvert.",
 	"Saved %s.": "%s enregistré.",

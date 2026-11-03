@@ -46,11 +46,28 @@ chaque migration, docs/inventory/).
 - [ ] Gringo : le fichier de la dernière carte reste user://map_editor.cfg
       (LtFiles.remember prend le chemin), rien à perdre.
 
-## Phases suivantes
-3 validateur, 4 canvas sur grille, 5 ensemble ↔ pièce, liens, puzzle
-(détail dans le plan approuvé, résumé dans CLAUDE.md).
+## Phase 3 : validateur (faite le 2026-11-03, à valider)
+- [x] Brique LtValidator / LtProblem (validator/), compteur du pied de
+      LtShell (validate(), set_problems(), problem_picked), couleur WARN
+      (jeton « warn », warning_color de l'éditeur Godot). 3 tests.
+- [x] Branché : Pinball Table (3 règles reprises, clic = case cadrée),
+      DungeonTactics Rooms (8 règles reprises), Gringo Map (culs-de-sac et
+      passages vers le vide en avertissements ; pastilles de légende gardées),
+      Gringo Level (trou noir sans retour ou vers un niveau disparu : erreur ;
+      départ dans une case pleine : avertissement), BatEmUp Levels (fichier
+      disparu, vague vide ou sans ennemi, chemin de moins de 2 points).
+- [x] On enregistre même avec une erreur. Test des niveaux finis : Gringo
+      (test_finished_levels_pass_the_validator) ; les autres jeux n'ont pas
+      de suite de tests (vérifiés à la main : tous sans erreur).
+- [ ] Pas de règle pour BatEmUp Patterns, Map painter, Dungeons (aucune
+      évidente) ; le puzzle : phase 5.
 
+## Phases suivantes
+4 canvas sur grille, 5 ensemble ↔ pièce, liens, puzzle
+(détail dans le plan approuvé, résumé dans CLAUDE.md).
 ## Décisions
+- 2026-11-03 : une règle du validateur est un Callable, pas une classe (plus
+  court ; le plan parlait de classes).
 - 2026-11-03 : design_tokens.cfg de ProjetGringo = la règle pour tous les
   projets ; une retouche s'y fait d'abord, puis se recopie (les autres
   projets ont chacun leur copie).

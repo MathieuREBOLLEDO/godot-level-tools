@@ -10,7 +10,8 @@ extends Control
 ##   [member center] (canvas, aperçu), [member right] (réglages) ; une colonne
 ##   vide est cachée ;
 ## - pied : [member legend] à gauche (pastilles), message à droite, qui revient
-##   à l'aide (set_help()) après quelques secondes.
+##   à l'aide (set_help()) après quelques secondes, puis le compteur des
+##   problèmes (set_problems(), validate()) : un clic montre le suivant.
 ## Un état vide (set_empty()) remplace le centre par un texte qui guide et
 ## ses boutons. Avec [member history] : Ctrl+Z / Ctrl+Y ; Ctrl+S émet
 ## [signal save_requested].
@@ -20,9 +21,13 @@ extends Control
 signal save_requested
 ## Le nom de l'en-tête a été changé (le document est à marquer modifié).
 signal name_edited(text: String)
+## Clic sur le compteur : [param problem] est à cadrer sur le canvas.
+signal problem_picked(problem: LtProblem)
 
 ## Durée d'un message dans le pied (s).
 const MESSAGE_TIME: float = 4.0
+## Demi-période du battement du compteur quand il y a une erreur (s).
+const PROBLEM_PULSE: float = 0.8
 
 var kicker: Label
 var name_edit: LineEdit
@@ -37,6 +42,10 @@ var footer_label: Label
 var history: LtHistory = null
 ## Ctrl+S émet save_requested (faux : laisser Ctrl+S à l'éditeur Godot).
 var save_shortcut: bool = true
+## Règles du document (validate()) ; null : pas de compteur.
+var validator: LtValidator = null
+## Compteur des problèmes (caché tant que set_problems() n'est pas appelé).
+var problems_button: Button
 
 var _spacer: Control
 var _confirm: ConfirmationDialog
@@ -47,6 +56,9 @@ var _outer_split: HSplitContainer
 var _inner_split: HSplitContainer
 var _help: String = ""
 var _message_left: float = 0.0
+var _problems: Array[LtProblem] = []
+var _next_problem: int = 0
+var _pulse: Tween = null
 
 
 func _init() -> void:
@@ -191,10 +203,10 @@ func set_help(text: String) -> void:
 
 
 ## Message dans le pied pendant MESSAGE_TIME s ; [param kind] : « info »,
-## « good » ou « bad » (couleur de sens).
+## « good », « bad » ou « warn » (couleur de sens).
 func show_message(text: String, kind: String = "info") -> void:
 	footer_label.text = text
-	var colors: Dictionary[String, Color] = {"good": LtTheme.GOOD, "bad": LtTheme.BAD, "info": LtTheme.SAND}
+	var colors: Dictionary[String, Color] = {"good": LtTheme.GOOD, "bad": LtTheme.BAD, "warn": LtTheme.WARN, "info": LtTheme.SAND}
 	footer_label.add_theme_color_override(&"font_color", colors.get(kind, LtTheme.SAND))
 	_message_left = MESSAGE_TIME
 
@@ -209,6 +221,81 @@ func bind_document(document: LtDocument) -> void:
 	document.saved.connect(func(_path: String) -> void: name_edit.text = document.file_name())
 	save_requested.connect(func() -> void: document.save(name_edit.text))
 	name_edited.connect(func(_text: String) -> void: document.dirty = true)
+
+
+# --- Problèmes ---
+
+## Vérifie [param document] avec [member validator] et met le compteur à
+## jour ; rend les problèmes (vide sans validateur).
+func validate(document: Variant) -> Array[LtProblem]:
+	if validator == null:
+		return [] as Array[LtProblem]
+	var problems: Array[LtProblem] = validator.check(document)
+	set_problems(problems)
+	return problems
+
+
+## Compteur du pied : « 1 error · 2 warnings » (rouge s'il y a une erreur,
+## orange sinon), « No problem » en vert ; la liste en bulle.
+func set_problems(problems: Array[LtProblem]) -> void:
+	if _messages(problems) != _messages(_problems):
+		_next_problem = 0
+	_problems = problems
+	problems_button.visible = true
+	var errors: int = LtValidator.count(problems, LtProblem.Severity.ERROR)
+	var warnings: int = problems.size() - errors
+	var parts: PackedStringArray = []
+	if errors > 0:
+		parts.append(LtText.t("%d error(s)") % errors)
+	if warnings > 0:
+		parts.append(LtText.t("%d warning(s)") % warnings)
+	problems_button.text = " · ".join(parts) if not parts.is_empty() else LtText.t("No problem")
+	var ink: Color = LtTheme.BAD if errors > 0 else (LtTheme.WARN if warnings > 0 else LtTheme.GOOD)
+	for state: StringName in [&"font_color", &"font_hover_color", &"font_pressed_color", &"font_focus_color"]:
+		problems_button.add_theme_color_override(state, ink)
+	var lines: PackedStringArray = []
+	for problem: LtProblem in problems:
+		lines.append(("✖ " if problem.is_error() else "⚠ ") + problem.message)
+	problems_button.tooltip_text = ("\n".join(lines) + "\n\n" + LtText.t("Click: show the next one")) if not lines.is_empty() else ""
+	problems_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if not problems.is_empty() else Control.CURSOR_ARROW
+	_set_pulse(errors > 0)
+
+
+func problems() -> Array[LtProblem]:
+	return _problems
+
+
+## Problème suivant : son message dans le pied, puis [signal problem_picked].
+func show_next_problem() -> void:
+	if _problems.is_empty():
+		return
+	var problem: LtProblem = _problems[_next_problem % _problems.size()]
+	_next_problem += 1
+	show_message(problem.message, "bad" if problem.is_error() else "warn")
+	problem_picked.emit(problem)
+
+
+# Une erreur attire l'œil : le compteur bat doucement.
+func _set_pulse(on: bool) -> void:
+	if on == (_pulse != null):
+		return
+	if _pulse != null:
+		_pulse.kill()
+		_pulse = null
+		problems_button.modulate.a = 1.0
+		return
+	if not is_inside_tree():
+		return
+	_pulse = create_tween().set_loops()
+	_pulse.tween_property(problems_button, "modulate:a", 0.45, PROBLEM_PULSE)
+	_pulse.tween_property(problems_button, "modulate:a", 1.0, PROBLEM_PULSE)
+
+
+func _messages(problems: Array[LtProblem]) -> PackedStringArray:
+	var result: PackedStringArray = []
+	for problem: LtProblem in problems:
+		result.append(problem.message)
+	return result
 
 
 # --- Construction ---
@@ -291,6 +378,14 @@ func _build_footer() -> Control:
 	footer_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	footer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	row.add_child(footer_label)
+	problems_button = Button.new()
+	problems_button.theme_type_variation = LtTheme.LEGEND
+	problems_button.add_theme_font_override(&"font", LtTheme.mono_font())
+	problems_button.add_theme_font_size_override(&"font_size", LtTheme.SMALL_SIZE)
+	problems_button.focus_mode = Control.FOCUS_NONE
+	problems_button.visible = false
+	problems_button.pressed.connect(show_next_problem)
+	row.add_child(problems_button)
 	return band
 
 

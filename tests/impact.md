@@ -20,6 +20,7 @@ Les tests tournent dans un jeu qui a l'addon et le test runner
 | Document (document/lt_document.gd) | `-Filter document` | enregistrer, renommer, ouvrir un autre |
 | Bibliothèque (document/lt_library*.gd) | `-Filter library` | listes des éditeurs |
 | Coque (shell/) | `-Filter shell` | tous les éditeurs |
+| Validateur (validator/) | `-Filter test_validator` | compteur du pied de tous les éditeurs ; tests des niveaux finis des jeux |
 | Essayer (playtest/) | `-Filter playtest` | lancement du jeu depuis les éditeurs ; côté jeu, la lecture de la demande |
 
 Non couvert par les tests : la mise à la corbeille (LtFiles.trash, elle

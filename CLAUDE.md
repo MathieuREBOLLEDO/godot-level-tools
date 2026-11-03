@@ -43,7 +43,9 @@ de tâche, le mettre à jour).
 - i18n/ : LtText et dictionnaire français. theme/ : LtTheme.
 - shell/ : LtShell (en-tête, corps, pied). document/ : LtFiles, LtDocument,
   LtLibrary et ses cartes. undo/ : LtHistory. fields/ : LtValueField.
-- playtest/ : LtPlaytest (Essayer en jeu). tests/ : tests et impact.md.
+- playtest/ : LtPlaytest (Essayer en jeu).
+- validator/ : LtValidator, LtProblem (règles du jeu, compteur du pied).
+- tests/ : tests et impact.md.
 - docs/guide.md : comment assembler un éditeur. docs/inventory/ :
   inventaires des éditeurs avant migration.
 

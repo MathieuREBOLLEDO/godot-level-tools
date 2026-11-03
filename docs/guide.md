@@ -68,6 +68,21 @@ pièces de DungeonTactics).
 `LtValueField.create(resource, &"speed", "Speed", "help", " m/s")` : bornes
 lues dans `@export_range`.
 
+## Vérifier (problèmes)
+Les règles vont dans un fichier du jeu (`level_rules.gd`) : chacune est un
+Callable `(document) -> Array[LtProblem]`, avec `LtProblem.error(message,
+endroit)` ou `LtProblem.warning(...)`. L'endroit est ce que l'éditeur sait
+cadrer (case, position, index de vague) ; null pour tout le document.
+```gdscript
+validator = LtValidator.new().add_rule(_no_exit).add_rule(_paths)
+problem_picked.connect(func(problem: LtProblem) -> void: _canvas.center_on(problem.where))
+# après chaque modification (et à l'ouverture) :
+validate(document.resource)
+```
+Pied : « 1 error(s) · 2 warning(s) » (rouge qui bat, orange, ou « No
+problem » en vert), la liste en bulle ; un clic montre le problème suivant.
+Tests du jeu : `validator.errors_in(chemins, load)` rend les erreurs
+(« fichier : message ») ; les avertissements ne font pas échouer.
 ## Essayer en jeu
 Éditeur : `LtPlaytest.play(document.resource, "res://game/main.tscn")`.
 Jeu, au démarrage : `var level = LtPlaytest.consume("level")` (null : partie
