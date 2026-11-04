@@ -85,10 +85,11 @@ func changed(grouped: bool = false) -> void:
 
 ## Autre façon de faire (éditeur de niveaux de Gringo) : à appeler AVANT une
 ## modification (début d'un coup de pinceau, redimensionnement) ; l'état
-## courant part dans la pile. Ne pas mélanger avec changed() dans un même
-## éditeur.
-func checkpoint() -> void:
-	_undo.append(_capture.call())
+## courant part dans la pile ([param state] : un instantané pris plus tôt, à
+## la place ; le live edit le prend à l'appui et ne le garde que si le coup
+## change quelque chose). Ne pas mélanger avec changed() dans un même éditeur.
+func checkpoint(state: Variant = null) -> void:
+	_undo.append(_capture.call() if state == null else state)
 	if _undo.size() > limit:
 		_undo.pop_front()
 	_redo.clear()

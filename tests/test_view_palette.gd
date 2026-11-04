@@ -10,6 +10,67 @@ func after_each() -> void:
 		DirAccess.remove_absolute(STORE)
 
 
+# --- LtCellSelection ---
+
+func test_cell_selection_drag_and_keys() -> void:
+	var selection: LtCellSelection = LtCellSelection.new()
+	var cell_at: Callable = func(at: Vector2) -> Vector2i: return Vector2i((at / 10.0).floor())
+	var actions: Array = []
+	selection.action_requested.connect(func(action: String, area: Rect2i, offset: Vector2i) -> void: actions.append([action, area, offset]))
+	var press: InputEventMouseButton = InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	press.position = Vector2(35, 15)
+	assert_false(selection.handle_input(press, cell_at), "without Shift: painting, not selecting")
+	press.shift_pressed = true
+	assert_true(selection.handle_input(press, cell_at))
+	var motion: InputEventMouseMotion = InputEventMouseMotion.new()
+	motion.position = Vector2(12, 41)
+	assert_true(selection.handle_input(motion, cell_at))
+	var release: InputEventMouseButton = InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	selection.handle_input(release, cell_at)
+	assert_eq(selection.rect, Rect2i(1, 1, 3, 4), "corners in any order")
+	assert_eq(LtCellSelection.cells_of(Rect2i(0, 0, 2, 2)).size(), 4)
+	var key: InputEventKey = InputEventKey.new()
+	key.pressed = true
+	key.keycode = KEY_D
+	key.ctrl_pressed = true
+	assert_true(selection.handle_key(key))
+	assert_eq(actions[0], ["duplicate", Rect2i(1, 1, 3, 4), Vector2i(3, 0)])
+	assert_eq(selection.rect.position, Vector2i(4, 1), "the selection follows the copy")
+	key.ctrl_pressed = false
+	key.keycode = KEY_DELETE
+	selection.handle_key(key)
+	assert_eq(actions[1][0], "delete")
+	key.keycode = KEY_ESCAPE
+	selection.handle_key(key)
+	assert_false(selection.has(), "Esc: no selection")
+	assert_false(selection.handle_key(key), "no selection: keys pass through")
+
+
+# --- LtPathEditor ---
+
+func test_path_editor_gestures() -> void:
+	var editor: LtPathEditor = LtPathEditor.new()
+	var added: Array[Vector2] = []
+	var removed: Array[bool] = []
+	editor.point_added.connect(func(at: Vector2) -> void: added.append(at))
+	editor.last_point_removed.connect(func() -> void: removed.append(true))
+	var to_content: Callable = func(at: Vector2) -> Vector2: return at * 0.5
+	var click: InputEventMouseButton = InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	click.position = Vector2(40, 20)
+	assert_false(editor.handle_input(click, to_content), "inactive: clicks go elsewhere")
+	editor.active = true
+	assert_true(editor.handle_input(click, to_content))
+	assert_eq(added, [Vector2(20, 10)] as Array[Vector2], "left click adds a point")
+	click.button_index = MOUSE_BUTTON_RIGHT
+	assert_true(editor.handle_input(click, to_content))
+	assert_eq(removed.size(), 1, "right click removes the last point")
+
+
 # --- LtView ---
 
 func test_view_fits_then_follows_the_user() -> void:

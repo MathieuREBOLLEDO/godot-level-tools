@@ -41,9 +41,15 @@ de tâche, le mettre à jour).
 
 ## Dossiers
 - i18n/ : LtText et dictionnaire français. theme/ : LtTheme.
-- shell/ : LtShell (en-tête, corps, pied). document/ : LtFiles, LtDocument,
-  LtLibrary et ses cartes. undo/ : LtHistory. fields/ : LtValueField.
+- shell/ : LtShell (en-tête, corps, pied), LtSettings (colonne de réglages).
+  document/ : LtFiles, LtDocument, LtLibrary et ses cartes (usages, import,
+  grille), LtFlags (marques DPRC, EXCL). undo/ : LtHistory.
+  fields/ : LtValueField.
+- workspace/ : LtWorkspace (onglets ensemble ↔ pièce).
 - playtest/ : LtPlaytest (Essayer en jeu).
+- live/ : LtLiveEdit (live edit en jeu : pause, fenêtre flottante
+  LtFloatingPanel, barre, annuler), LtLiveHost (ce que le jeu donne).
+- layers/ : LtLayers (calques du réglage level_tools/layers).
 - validator/ : LtValidator, LtProblem (règles du jeu, compteur du pied).
 - view/ : LtView (zoom, déplacement, cadrage, rotation : gestes communs).
 - palette/ : LtPalette, LtPaletteSlot (gomme, pages, touches, favoris).

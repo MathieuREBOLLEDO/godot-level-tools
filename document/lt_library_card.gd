@@ -10,6 +10,8 @@ extends Control
 ## Repris de MapLevelCard (éditeur de carte de Gringo).
 
 signal picked(key: String)
+## Relâché sur la carte sans glisser (picked, lui, part dès l'appui).
+signal clicked(key: String)
 signal activated(key: String)
 ## Nouveau nom tapé sur la carte (clic droit > Rename, si [member renamable]).
 signal rename_requested(key: String, new_name: String)
@@ -45,6 +47,7 @@ var _hover: float = 0.0 # 0 à 1, animé
 var _hovering: bool = false
 var _menu: PopupMenu = null
 var _name_edit: LineEdit = null
+var _pressed: bool = false
 
 
 ## [param info] : title, detail, thumbnail, badge, badge_color, dimmed,
@@ -91,6 +94,22 @@ func _gui_input(event: InputEvent) -> void:
 			activated.emit(key)
 		else:
 			picked.emit(key)
+			_pressed = true
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_DRAG_BEGIN:
+		_pressed = false
+
+
+# Bouton relâché sur la carte sans l'avoir glissée : un clic (ajouter...).
+func _input(event: InputEvent) -> void:
+	var button: InputEventMouseButton = event as InputEventMouseButton
+	if not _pressed or button == null or button.button_index != MOUSE_BUTTON_LEFT or button.pressed:
+		return
+	_pressed = false
+	if get_global_rect().has_point(button.global_position):
+		clicked.emit(key)
 
 
 ## Champ de saisie sur le nom de la carte ; Entrée valide, Échap annule.

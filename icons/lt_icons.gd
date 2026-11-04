@@ -19,3 +19,6 @@ const PLAY: Texture2D = preload("res://addons/level_tools/icons/play.svg")
 const BACK: Texture2D = preload("res://addons/level_tools/icons/back.svg")
 const PREVIOUS: Texture2D = preload("res://addons/level_tools/icons/previous.svg")
 const NEXT: Texture2D = preload("res://addons/level_tools/icons/next.svg")
+## Bibliothèque : cartes en grille de miniatures, ou en liste.
+const GRID: Texture2D = preload("res://addons/level_tools/icons/grid.svg")
+const LIST: Texture2D = preload("res://addons/level_tools/icons/list.svg")

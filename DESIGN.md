@@ -48,6 +48,21 @@ Tous les écrans rangent leur en-tête et leur pied dans le même ordre :
 - Bouton en icône seule : `LtTheme.button(groupe, "", bulle, action, icône)`,
   la bulle dit l'action et son raccourci.
 
+## Calques (LtLayers)
+- Réglage du projet level_tools/layers : {id, name, collides, front}, dans
+  l'ordre du dessin ; « game » toujours là. Barre des calques : un bouton par
+  calque, sur plusieurs lignes s'il le faut ; le calque édité net, les autres
+  estompés (derrière sans collision : teinté), bulle : derrière ou devant,
+  collision ou non.
+
+## Live edit (LtLiveEdit)
+Même cadre dans tous les jeux : jeu en pause, fenêtre flottante de la
+palette en haut à gauche (déplacer par le titre, coin pour la taille),
+barre en bas au centre (aide qui passe à la ligne sur un écran étroit,
+Annuler / Refaire, Reprendre, Enregistrer en bouton principal ; sans
+Enregistrer, Reprendre l'est). Clic gauche pose, clic droit retire, Échap
+reprend ; repères du jeu (case survolée) en couleur ACCENT.
+
 ## Animations
 Rares : survol des cartes de la bibliothèque (fondu), retour d'une action
 dans le pied. Rien qui bouge sans raison.
@@ -63,6 +78,12 @@ dans le pied. Rien qui bouge sans raison.
 | F | tout le contenu dans la vue (elle suit ensuite la taille du canvas) |
 | 1 à 9 puis 0 | cases de la page affichée de la palette |
 | Clic droit sur une case de la palette | favori ; glisser une case : ordre |
+
+| M | miroir de l'élément choisi (côté gauche / droit) |
+| Ctrl+D, Suppr | dupliquer, retirer ce qui est choisi (vague, couche, niveau sur la carte, objet de la table) |
+| Maj + clic gauche glissé | zone (LtCellSelection) ; Ctrl+D la copie à sa droite, Suppr la vide, Échap l'enlève |
+| Mode chemin : clic gauche, clic droit | un point de plus, retirer le dernier (LtPathEditor ; points numérotés) |
+| Clic du milieu sans glisser | verrou (niveau sur la carte, objet de la table, vague sur la frise) : ni déplacé, ni retiré |
 
 Pour effacer : la gomme, en tête de palette. À l'ouverture, le contenu
 tient dans la vue. Les touches passent au canvas quand la souris est dessus

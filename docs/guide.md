@@ -32,7 +32,33 @@ shell.add_group(true)                      # groupe à gauche, après le nom
 shell.add_header(back_button, "start")     # avant le nom (Retour)
 shell.add_header(fields, "left", true)     # des champs qui prennent la place libre
 shell.confirm("Move x.tres to the trash?", "Move to trash", on_ok)
+shell.add_undo_buttons(history)            # Annuler / Refaire en icônes, grisés quand vides
 ```
+Ordre et forme des groupes : DESIGN.md, « Disposition commune ». Chaque
+éditeur a les mêmes fichiers : Nouveau, Ouvrir, Dupliquer, Supprimer
+(corbeille, confirmation qui dit où le document sert), Enregistrer ; et
+Ctrl+S de l'éditeur Godot (`_save_external_data` du plugin).
+
+## Ensemble ↔ pièce (onglets)
+```gdscript
+var workspace := LtWorkspace.new()
+workspace.config_path = "user://my_editor.cfg"   # onglet et pièce retenus
+add_child(workspace)
+workspace.setup(map_shell, "Map", level_editor, "Level", "Double click a level to edit it here.")
+workspace.whole_shown.connect(reload_pieces)      # retour sur l'ensemble : relire
+workspace.show_piece("cave_02", path)             # double-clic sur une pièce
+# une fois l'éditeur rempli :
+var last := workspace.last_piece()                # rouvrir la dernière pièce
+workspace.restore_tab()
+```
+
+## Marques (DPRC, EXCL)
+`LtFlags.add_filter(library)` (cachées par défaut) ;
+`settings.flags(section, func(flag, on): LtFlags.set_flag(res, flag, on))`
+puis `LtFlags.show_checks(checks, res)` à l'ouverture. Rangées dans les
+propriétés `deprecated` / `exclude_from_game` de la ressource si elle les a,
+sinon dans ses métadonnées. Le jeu ignore ce qui est exclu :
+`LtFlags.is_excluded(res)`.
 
 ## Bibliothèque
 ```gdscript
@@ -44,7 +70,19 @@ library.picked.connect(document.open)
 shell.left.add_child(library)
 library.set_paths(document.paths())
 ```
-Grille de miniatures (navigateur) : `library.set_layout(LtLibraryCard.Layout.GRID)`.
+Grille de miniatures (navigateur) : `library.set_layout(LtLibraryCard.Layout.GRID)`,
+ou un bouton liste / grille : `library.add_layout_toggle()`.
+
+Usages (bibliothèque des pièces d'un ensemble) : badge, estompé, bulle et
+filtre d'usage d'un coup :
+```gdscript
+library.set_usage(func(path): return table.uses(path),          # dans l'ensemble ouvert
+	func(path): return other_tables_using(path),                 # PackedStringArray de noms
+	{"badge_here": "on this table", "badge_elsewhere": "on %s"})
+library.used_elsewhere(path)   # avant de supprimer : avertir
+```
+Import : `library.enable_import(dir, func(res): return res is MyLevel)` puis
+`library.imported.connect(func(written, rejected): ...)`.
 
 ## Annuler
 ```gdscript
@@ -60,13 +98,24 @@ de pinceau, éditeur de niveaux de Gringo) ; ne pas mélanger avec changed().
 
 ## Renommer depuis la bibliothèque
 `library.renamable = true` (clic droit sur une carte > Rename) et
-`library.rename_requested.connect(document.rename_file)`. Laisser faux quand
-un autre fichier retient le chemin (cartes du monde de Gringo, ordre des
-pièces de DungeonTactics).
+`library.rename_requested.connect(document.rename_file)`. Quand d'autres
+fichiers retiennent le chemin, le jeu les met à jour lui-même (Gringo :
+game/level/level_files.gd, cartes, niveau de départ, trous noirs).
 
 ## Réglages
-`LtValueField.create(resource, &"speed", "Speed", "help", " m/s")` : bornes
-lues dans `@export_range`.
+Colonne de droite, à la place de l'Inspecteur de Godot :
+```gdscript
+var settings := shell.settings()                 # LtSettings dans shell.right
+var module := settings.section("MODULE")
+settings.text(module, "Name", res.display_name, func(t): res.display_name = t)
+settings.size_pair(module, "Size", res.size, Vector2i.ONE, Vector2i(20, 20), func(v): resize(v))
+settings.option(module, "Role", roles, index, func(i): ...)
+settings.color(module, "Floor", res.floor_color, func(c): ...)
+var checks := settings.flags(module, func(flag, on): LtFlags.set_flag(res, flag, on))
+settings.clear()                                 # autre élément choisi
+```
+`LtValueField.create(resource, &"speed", "Speed", "help", " m/s")` : curseur
+et nombre, bornes lues dans `@export_range`.
 
 ## Vérifier (problèmes)
 Les règles vont dans un fichier du jeu (`level_rules.gd`) : chacune est un

@@ -88,9 +88,174 @@ chaque migration, docs/inventory/).
       tourner, déplacer, F).
 - [x] Tableau des gestes : docs/inventory/gestes_4b.md.
 - [ ] Palette de Gringo encore à elle (calques, tiroir du sol) : la passer sur
-      LtPalette plus tard si utile.## Phases suivantes
-4 canvas sur grille, 5 ensemble ↔ pièce, liens, puzzle
-(détail dans le plan approuvé, résumé dans CLAUDE.md).
+      LtPalette plus tard si utile.
+
+## Phase 5 revue : parité des fonctions (cadrée le 2026-11-03)
+But : chaque fonction d'un éditeur existe dans tous les autres (Gringo en
+référence), pas seulement des briques techniques communes.
+- [x] Inventaire : docs/inventory/parite.md (tableau par éditeur, ordre,
+      questions Q1 à Q10).
+- [x] Réponses aux questions (2026-11-04, dans parite.md).
+- [x] Étape 1 (2026-11-04, à valider) : briques LtWorkspace (onglets,
+      onglet et pièce retenus), LtFlags (DPRC, EXCL sur toute ressource),
+      bibliothèque complétée (set_usage : badges, estompé, filtre ;
+      enable_import ; add_layout_toggle), LtSettings + LtShell.settings(),
+      LtShell.add_undo_buttons() ; icônes GRID, LIST. 8 tests.
+      Gringo dessus : onglets LtWorkspace (dernier niveau et onglet
+      rouverts), carte avec Annuler / Refaire, Essayer le niveau choisi,
+      Dupliquer et Supprimer la carte ; Level avec Supprimer (avertit des
+      cartes qui l'utilisent) et Annuler / Refaire en icônes ; renommer un
+      niveau depuis la bibliothèque ou Browse (cartes, départ, trous noirs
+      suivent : game/level/level_files.gd, 2 tests) ; Ctrl+S de Godot.
+      Pas encore : la colonne de réglages n'a pas d'utilisateur (Pinball,
+      étape 2) ; Gringo garde ses réglages dans l'en-tête.
+- [x] Étape 2, Pinball (2026-11-04, à valider) : onglets LtWorkspace (onglet
+      et module rouverts) ; Table : bibliothèque LtLibrary (modules, modules
+      peints, éléments ; miniatures, Kind, Usage, Flags, tri, grille, import,
+      Rename des modules peints) à la place de palette.gd ; colonne de
+      réglages (zone, élément, module) à la place de l'Inspecteur ; Duplicate,
+      Delete ; Ctrl+S de Godot. Modules : colonne de réglages (nom, taille,
+      sol, bas ouvert, marques), menu Open, Duplicate, Delete, Test dans une
+      zone d'essai. Brique : LtLibrary.clicked (relâché sans glisser),
+      LtShell._settings_column (nom libéré pour les jeux), filtre Flags sur
+      des données qui ne sont pas des objets.
+- [x] Étape 3a, DungeonTactics Dungeons | Rooms (2026-11-04, à valider) :
+      onglets LtWorkspace (fin du bouton Salles / Retour ; onglet, donjon et
+      salle rouverts) ; double-clic sur une pièce de l'aperçu = sa salle
+      (les pièces posées notent leur fichier, dungeon_grid.gd) ; miniatures,
+      liste ou grille, usages (donjon dans le monde ; salle dans ce donjon,
+      dans un autre), marques (un donjon ou une salle EXCL n'est plus pris par
+      le jeu ni tiré) ; Dupliquer ; Rename des salles qui garde le numéro de
+      tête (ordre du tirage) ; Play d'un donjon et d'une salle seule (main.gd
+      lit la demande « dungeon ») ; validateur des donjons (pas généré :
+      erreur ; pas d'entrée : avertissement). Brique : LtWorkspace ignore un
+      titre de pièce donné avant que l'onglet existe.
+- [x] 3b, Map painter (2026-11-04, à valider) : plusieurs cartes dans
+      game/level/maps/ ; bibliothèque (miniature, « in game », Flags, tri,
+      grille, Rename) à gauche, outils à droite ; nom renommé à
+      l'enregistrement ; marques (maps.cfg) ; « Use in game » (réglage du
+      projet dungeon_tactics/world/painted_map, lu par
+      WorldData.painted_map()) ; Play (carte pour une partie) ; Nouvelle,
+      Dupliquer, Supprimer ; dernière carte rouverte ; validateur (taille).
+      Le jeu garde la carte d'une partie dans la sauvegarde.
+- [x] Étape 4, BatEmUp (2026-11-04, à valider) : un onglet « Levels » à
+      deux onglets LtWorkspace (Levels | Patterns ; plugin batemup_tools
+      retiré) ; double-clic sur une vague ou « Edit pattern » = son pattern
+      (un nouveau si elle n'en a pas) ; bibliothèques : miniatures, grille,
+      import, filtres (sens ; tireur), usages (scène qui joue un niveau ; ce
+      niveau, autres niveaux, boss, player pour un pattern), Flags, tri ;
+      marques DPRC / EXCL ; validateur des patterns ; avertissement à la
+      suppression d'un pattern utilisé. Brique : LtLibrary.add_filters_toggle
+      (filtres repliés quand la colonne est courte).
+- [ ] Étape 5 : canvas, en sous-étapes (une validation chacune) ; 5a à 5f
+      faites et validées (2026-11-04). Reste : calques de Pinball Modules et
+      de DungeonTactics Rooms (5e, Gringo d'abord), palette de Gringo sur
+      LtPalette et palette des éléments de la table Pinball (à décider) :
+      - [x] 5a (2026-11-04, à valider) gestes sans changement de format :
+        Ctrl+D / Suppr (vagues, couches, niveau choisi sur la carte de
+        Gringo : copie enregistrée posée à la première case libre à droite),
+        miroir M dans Gringo Level, pipette au clic droit sans glisser sur la
+        table Pinball (sa carte choisie dans la bibliothèque ; glissé = vue,
+        comme avant), vue commune (LtView) dans l'aperçu des donjons ;
+      - [x] 5b (2026-11-04, à valider) palettes communes : vagues et couches
+        toutes prêtes de BatEmUp (Q5 ; clic = ajouter, favoris, ordre, 1 à 9 ;
+        à la place des menus « Add ▾ »), couleurs du Map painter (pages
+        Terrain et Places, une couleur de l'autre page change de calque,
+        1 à 9 souris sur la carte ; colonne qui défile). Brique :
+        LtPalette.show_name. Pas fait, à décider : la palette de Gringo
+        reste à elle (modèle de LtPalette, avec calques et tiroir du sol) ;
+        les éléments de la table Pinball sont des cartes de la bibliothèque
+        (clic, glisser) plutôt qu'une palette ;
+      - [x] 5c (2026-11-04, à valider) brique LtCellSelection (Maj +
+        glisser, Ctrl+D à droite, Suppr, Échap ; 1 test) dans Gringo Level
+        (couche éditée, rotations, tuiles forcées, réglages), Pinball Modules
+        (objets dont le coin est dans la zone ; ce qui ne tient pas est
+        laissé) et Rooms (la pièce s'élargit, 20 cases au plus) ; verrou des
+        vagues (clic du milieu sur la frise, bouton), des couches (cadenas de
+        la carte), des objets de la table (clic du milieu, case Locked ;
+        cadenas dessiné) : champ locked dans WaveData, PatternLayer,
+        ElementPlacement, ModulePlacement. Corrigé au passage : l'annuler du
+        pinceau de Gringo Level ne rendait pas les cases (instantané qui
+        partageait les tableaux du niveau ; déjà le cas avant level_tools) ;
+      - [x] 5d (2026-11-04, à valider) brique LtPathEditor (clic gauche un
+        point, clic droit retire le dernier ; tracé aux points numérotés ;
+        1 test) : vagues de BatEmUp dessus ; Gringo dessine le chemin choisi
+        avec elle et gagne le clic droit (retirer le dernier point) et
+        l'annuler des points. Voisins : un module peint ouvert depuis la
+        table voit les autres modules de la zone, ombrés, à sa vraie case ;
+        une salle ouverte depuis l'aperçu d'un donjon voit le donjon autour
+        d'elle (3 cases, ombré ; oublié quand on ouvre une autre salle) ;
+      - 5e calques en nombre réglable par projet (format des fichiers).
+        Décidé le 2026-11-04 : Gringo d'abord (Pinball, Rooms ensuite) ;
+        chaque calque peut jouer (collisions réglables) ; pas de parallaxe ;
+        réglage du projet. Plan validé ; fait pour Gringo le 2026-11-04,
+        à valider par l'utilisateur (Pinball Modules, Rooms : ensuite) :
+        - brique LtLayers : liste des calques dans le réglage du projet
+          level_tools/layers ({id, name, collides, front}, dans l'ordre du
+          dessin), lue par l'éditeur et le jeu ; barre des calques commune
+          (un bouton par calque, les autres estompés) ;
+        - Gringo : LevelData garde tiles (le calque « game » : éléments de
+          jeu, départ, trous noirs...) et range les autres dans layers
+          (id -> cases) ; background et foreground d'un niveau ancien sont lus
+          comme les calques « back » et « front » (rien à refaire) ; défaut
+          du réglage : back, game, front comme aujourd'hui ;
+        - un calque collides : ses cases solides (roche, sol, sable ; le
+          métal n'est pas un élément de décor) bloquent Gringo ; les autres éléments (pics, plateformes, clés...)
+          restent sur le calque game ; front : dessiné devant Gringo ;
+        - fait : layers/lt_layers.gd (réglage déclaré par le plugin),
+          level_data (layers, layer_id, layer_bytes, migrate_layers ; le
+          Layer d'avant marche encore), ground_tiles, level_palette (barre
+          en lignes, bulle : derrière/devant, collision), level_canvas,
+          level_editor (zone, annuler), element_builder (Layer_<id>),
+          grid_level (_add_layer_bodies) ; aperçus de carte et live edit :
+          calque game seulement, comme avant ; tests :
+          game/level/tests/test_level_layers.gd ;
+      - 5f édition en jeu (BatEmUp, Pinball, DungeonTactics). 5e validé le
+        2026-11-04. Réponses du 2026-11-04 : DT, peindre une salle change
+        son modèle (comme l'onglet Rooms) ; Pinball, rien n'est enregistré
+        (la partie en cours seulement, pas de Save) ; BatEmUp, voie du clic
+        et moment choisi dans la fenêtre (le jeu y revient) ; annuler /
+        refaire (Ctrl+Z, Ctrl+Y) partout, Gringo compris. Plan validé ; fait et
+        validé par l'utilisateur le 2026-11-04. Fait : live/lt_live_edit.gd,
+        lt_live_host.gd, lt_floating_panel.gd (celle de Gringo retirée),
+        LtHistory.checkpoint(état) ; Gringo : live_edit.gd hôte,
+        LevelData.snapshot() ; BatEmUp : wave_presets.gd (préréglages communs
+        avec l'éditeur), level_live_edit.gd, LevelRunner.start(niveau, moment),
+        bouton Live edit de BatEmUp > Niveau ; Pinball : table_live_edit.gd,
+        Table.clear(), main.rebuild_table(), Pinball > Live edit (les
+        changements durent jusqu'à la fin de la manche : chaque manche refait
+        sa zone) ; DungeonTactics : world_live_edit.gd, PaintedGen.set_pixel,
+        WorldData.reread_place, WorldMap.reload_chunk, <jeu> > Live edit ;
+        peindre sous un lieu fait main (camp...) ne change rien (le lieu
+        passe devant) ; un ennemi peint dans une pièce apparaît au prochain
+        donjon tiré. Tests : level_tools/tests/test_live_edit.gd,
+        game/level/tests/test_live_edit.gd ; les trois autres jeux vérifiés en
+        jeu (scripts de contrôle). Plan :
+        - brique LtLiveEdit (live/) : le cadre du live edit de Gringo, pour
+          tous : jeu en pause, palette dans une fenêtre flottante (la
+          FloatingPanel de Gringo passe dans l'addon : LtFloatingPanel),
+          barre du bas (aide, Resume, Save en bouton principal), Échap =
+          reprendre, clic gauche glissé = poser, clic droit = retirer, une
+          reconstruction par image au plus, case survolée dessinée. Le jeu
+          donne un hôte : palette, écran -> case, poser/retirer, rebuild,
+          save, dessin du repère ; ouvert depuis son debug menu ;
+        - Gringo dessus, mêmes gestes (molette = tourner, 1 à 9) ;
+        - BatEmUp : palette des préréglages de vague ; clic = une vague à la
+          voie du clic, un peu après le moment joué ; clic droit = retirer la
+          vague la plus proche ; rebuild = LevelRunner repart au même moment
+          (nouveau : start depuis un temps) ; save = le .tres du niveau ;
+          [réponse : moment réglé dans la fenêtre flottante, pas « +1 s »] ;
+        - Pinball : bibliothèque modules + éléments en palette ; clic = poser
+          sur la table (rayon caméra -> plan y = 0 -> case), clic droit =
+          retirer l'objet sous la souris ; rebuild = Table vidée puis
+          reconstruite (nouveau), balles gardées ; [réponse : la copie de la
+          partie seulement, pas de Save] ;
+        - DungeonTactics : carte du monde (couleurs du Map painter, pixel du
+          PNG, PaintedGen refait, changements de la partie gardés par
+          restore_changes ; save = le PNG) et donjon (légende des salles,
+          case -> salle sous la souris) ; hors ligne seulement (en ligne la
+          pause n'arrête pas le jeu).
+- Ensuite : liens et puzzle (ancienne phase 5).
 ## Décisions
 - 2026-11-03 : une règle du validateur est un Callable, pas une classe (plus
   court ; le plan parlait de classes).

@@ -61,6 +61,7 @@ var _message_left: float = 0.0
 var _problems: Array[LtProblem] = []
 var _next_problem: int = 0
 var _pulse: Tween = null
+var _settings_column: LtSettings = null
 
 
 func _init() -> void:
@@ -167,6 +168,21 @@ func confirm(text: String, ok_text: String, on_confirmed: Callable, title: Strin
 	_confirm.popup_centered()
 
 
+## Groupe Annuler / Refaire de l'en-tête (icônes seules, grisées quand
+## [param stack] est vide de ce côté). [param on_undo] / [param on_redo] :
+## à la place de stack.undo() / redo() (un message à afficher...).
+func add_undo_buttons(stack: LtHistory, on_undo: Callable = Callable(), on_redo: Callable = Callable()) -> HBoxContainer:
+	var group: HBoxContainer = add_group()
+	var undo_button: Button = LtTheme.button(group, "", LtText.t("Undo (Ctrl+Z)"), on_undo if on_undo.is_valid() else func() -> void: stack.undo(), LtIcons.UNDO)
+	var redo_button: Button = LtTheme.button(group, "", LtText.t("Redo (Ctrl+Y)"), on_redo if on_redo.is_valid() else func() -> void: stack.redo(), LtIcons.REDO)
+	var update: Callable = func() -> void:
+		undo_button.disabled = not stack.can_undo()
+		redo_button.disabled = not stack.can_redo()
+	stack.stack_changed.connect(update)
+	update.call()
+	return group
+
+
 ## Le bouton principal de l'écran (Enregistrer...) : plein, dans l'accent.
 func set_primary(button: Button) -> void:
 	button.theme_type_variation = LtTheme.PRIMARY
@@ -181,6 +197,16 @@ func set_column_widths(left_width: float, right_width: float) -> void:
 	left.visible = left_width > 0.0
 	right.visible = right_width > 0.0
 	_update_columns()
+
+
+## Colonne de réglages (LtSettings) dans [member right], créée au premier
+## appel et montrée.
+func settings(width: float = 300.0) -> LtSettings:
+	if _settings_column == null:
+		_settings_column = LtSettings.new()
+		right.add_child(_settings_column)
+		set_column_widths(left.custom_minimum_size.x if left.visible else 0.0, width)
+	return _settings_column
 
 
 ## État vide : [param text] guide (« No level yet: click New... ») ; les

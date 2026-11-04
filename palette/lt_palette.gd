@@ -22,6 +22,9 @@ var columns: int = 3
 var rows: int = 5
 ## Fichier de user:// où l'ordre et les favoris sont retenus ("" : rien).
 var store_path: String = ""
+## Nom de l'élément choisi sous la grille (faux : une palette de « clic =
+## ajouter », sans choix qui reste, ou une colonne courte).
+var show_name: bool = true
 ## Élément choisi ("" : la gomme).
 var selected: String = ""
 
@@ -192,6 +195,7 @@ func _build() -> void:
 	add_child(_grid)
 	_name_label = LtTheme.label("", LtTheme.DIM)
 	_name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_name_label.visible = show_name
 	add_child(_name_label)
 
 
