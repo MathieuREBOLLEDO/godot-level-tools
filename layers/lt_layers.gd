@@ -4,21 +4,24 @@ extends RefCounted
 
 ## Calques d'un projet, les mêmes pour l'éditeur et le jeu : réglage du
 ## projet level_tools/layers, une liste dans l'ordre du dessin (du fond vers
-## le devant). Chaque calque : {id, name, collides, front}.
+## le devant). Chaque calque : {id, name, collides, front, reveal}.
 ## - id : rangé dans les fichiers des niveaux (ne pas le changer après coup) ;
 ## - name : affiché dans l'éditeur ;
 ## - collides : ses cases solides bloquent le joueur ;
-## - front : dessiné devant le joueur.
+## - front : dessiné devant le joueur ;
+## - reveal : opaque, chaque groupe de cases s'efface quand le joueur y entre
+##   (caches des secrets) ; le jeu s'en charge.
 ## Le calque GAME (les éléments de jeu : départ, pièges, ennemis...) est
 ## toujours là, même si le réglage l'oublie. Sans réglage : DEFAULT (fond,
-## jeu, devant), les trois couches qu'avait Gringo.
+## jeu, secret, devant).
 
 const SETTING: String = "level_tools/layers"
 const GAME: String = "game"
 const DEFAULT: Array[Dictionary] = [
-	{"id": "back", "name": "Back", "collides": false, "front": false},
-	{"id": "game", "name": "Game", "collides": true, "front": false},
-	{"id": "front", "name": "Front", "collides": false, "front": true},
+	{"id": "back", "name": "Back", "collides": false, "front": false, "reveal": false},
+	{"id": "game", "name": "Game", "collides": true, "front": false, "reveal": false},
+	{"id": "secret", "name": "Secret", "collides": false, "front": true, "reveal": true},
+	{"id": "front", "name": "Front", "collides": false, "front": true, "reveal": false},
 ]
 
 
@@ -41,6 +44,7 @@ static func list() -> Array[Dictionary]:
 				"name": str((entry as Dictionary).get("name", id.capitalize())),
 				"collides": bool((entry as Dictionary).get("collides", id == GAME)),
 				"front": bool((entry as Dictionary).get("front", false)),
+				"reveal": bool((entry as Dictionary).get("reveal", false)),
 			})
 	if result.is_empty():
 		return DEFAULT.duplicate(true)

@@ -31,6 +31,7 @@ Les tests tournent dans un jeu qui a l'addon et le test runner
 | Usages, import, grille (lt_library.gd) | `-Filter library_usage`, `-Filter library_import` | bibliothèque de la carte de Gringo |
 | Colonne de réglages (shell/lt_settings.gd) | `-Filter settings_column` | colonnes de réglages des éditeurs |
 | Annuler / Refaire de l'en-tête (LtShell.add_undo_buttons) | `-Filter shell_undo_buttons` | Map et Level de Gringo |
+| Calques (layers/lt_layers.gd) | `-Filter test_layers` | calques des niveaux de Gringo (`-Filter test_level_layers`), caches des secrets (calque reveal) |
 | Live edit (live/lt_live_edit.gd, LtHistory.checkpoint(état)) | `-Filter test_live_edit` | live edit de Gringo (game/level/tests/test_live_edit.gd) ; BatEmUp, Pinball, DungeonTactics : sans tests, à vérifier en jeu (debug menu > Live edit) |
 
 Non couvert par les tests : la mise à la corbeille (LtFiles.trash, elle
