@@ -22,6 +22,9 @@ signal activated(path: String)
 ## Nouveau nom tapé sur une carte (clic droit > Rename, si [member renamable]) ;
 ## LtDocument.rename_file() le fait.
 signal rename_requested(path: String, new_name: String)
+## Clic droit sur une carte > Delete (si [member deletable]) : le jeu
+## confirme et supprime le fichier.
+signal delete_requested(path: String)
 ## Import (enable_import()) : fichiers copiés dans le dossier, et ceux refusés.
 signal imported(written: PackedStringArray, rejected: PackedStringArray)
 
@@ -42,6 +45,8 @@ var selected_path: String = ""
 ## Clic droit sur une carte > Rename. Faux quand d'autres fichiers retiennent
 ## le chemin (une carte du monde qui liste ses niveaux par chemin).
 var renamable: bool = false
+## Clic droit sur une carte > Delete.
+var deletable: bool = false
 
 ## Rangée du haut : le jeu y met son surtitre et ses boutons (Import...).
 var header: HBoxContainer
@@ -280,8 +285,10 @@ func refresh() -> void:
 		var card: LtLibraryCard = LtLibraryCard.new(path, _with_usage(path, describe.call(path, _data[path])), layout)
 		card.selected = path == selected_path
 		card.renamable = renamable
+		card.deletable = deletable
 		card.picked.connect(_on_picked)
 		card.rename_requested.connect(func(key: String, new_name: String) -> void: rename_requested.emit(key, new_name))
+		card.delete_requested.connect(func(key: String) -> void: delete_requested.emit(key))
 		card.activated.connect(func(key: String) -> void: activated.emit(key))
 		card.clicked.connect(func(key: String) -> void: clicked.emit(key))
 		_cards.add_child(card)

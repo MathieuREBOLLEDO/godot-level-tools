@@ -45,6 +45,7 @@ const TEXTS: Dictionary[String, String] = {
 	"%s moved to the trash.": "%s mis à la corbeille.",
 	"Renamed %s.": "Renommé en %s.",
 	"Rename…": "Renommer…",
+	"Delete…": "Supprimer…",
 	# Bibliothèque
 	"search": "rechercher",
 	"Sort by": "Trier par",

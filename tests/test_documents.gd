@@ -150,6 +150,29 @@ func test_library_card_rename() -> void:
 	assert_eq(asked, [[DIR + "one.tres", "two"]])
 
 
+func test_library_card_delete() -> void:
+	_write("one")
+	var library: LtLibrary = add_test_node(LtLibrary.new())
+	library.set_paths(LtFiles.list(DIR))
+	var card: LtLibraryCard = _cards(library)[0]
+	assert_false(card.deletable, "off by default")
+	var asked: Array[String] = []
+	library.delete_requested.connect(func(path: String) -> void: asked.append(path))
+	card.menu_chosen(LtLibraryCard.MENU_DELETE)
+	assert_eq(asked.size(), 0, "not deletable: nothing asked")
+	library.deletable = true
+	library.refresh()
+	card = _cards(library)[0]
+	assert_true(card.deletable)
+	assert_false(card.renamable, "delete without rename")
+	card.menu_chosen(LtLibraryCard.MENU_RENAME)
+	await frames(1)
+	assert_null(card.get_child(card.get_child_count() - 1) as LineEdit if card.get_child_count() > 0 else null, "not renamable: no name field")
+	card.menu_chosen(LtLibraryCard.MENU_DELETE)
+	assert_eq(asked, [DIR + "one.tres"] as Array[String])
+	assert_true(FileAccess.file_exists(DIR + "one.tres"), "the library only asks: the game deletes")
+
+
 # --- LtLibrary ---
 
 func test_library_search_filter_and_sort() -> void:

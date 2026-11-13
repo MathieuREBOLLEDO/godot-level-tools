@@ -15,6 +15,8 @@ signal clicked(key: String)
 signal activated(key: String)
 ## Nouveau nom tapé sur la carte (clic droit > Rename, si [member renamable]).
 signal rename_requested(key: String, new_name: String)
+## Clic droit > Delete (si [member deletable]) : le jeu confirme et supprime.
+signal delete_requested(key: String)
 
 enum Layout { LIST, GRID }
 
@@ -42,6 +44,11 @@ var selected: bool = false:
 		queue_redraw()
 ## Clic droit > Rename : le nom se change sur la carte.
 var renamable: bool = false
+## Clic droit > Delete : [signal delete_requested].
+var deletable: bool = false
+
+const MENU_RENAME: int = 0
+const MENU_DELETE: int = 1
 
 var _hover: float = 0.0 # 0 à 1, animé
 var _hovering: bool = false
@@ -86,7 +93,7 @@ func _gui_input(event: InputEvent) -> void:
 	var button: InputEventMouseButton = event as InputEventMouseButton
 	if button == null or not button.pressed:
 		return
-	if button.button_index == MOUSE_BUTTON_RIGHT and renamable:
+	if button.button_index == MOUSE_BUTTON_RIGHT and (renamable or deletable):
 		_open_menu(get_screen_position() + button.position)
 		accept_event()
 	elif button.button_index == MOUSE_BUTTON_LEFT:
@@ -146,11 +153,22 @@ func _end_rename(text: String) -> void:
 func _open_menu(at: Vector2) -> void:
 	if _menu == null:
 		_menu = PopupMenu.new()
-		_menu.add_item(LtText.t("Rename…"), 0)
-		_menu.id_pressed.connect(func(_id: int) -> void: start_rename.call_deferred())
+		if renamable:
+			_menu.add_item(LtText.t("Rename…"), MENU_RENAME)
+		if deletable:
+			_menu.add_item(LtText.t("Delete…"), MENU_DELETE)
+		_menu.id_pressed.connect(menu_chosen)
 		add_child(_menu)
 	_menu.position = Vector2i(at)
 	_menu.popup()
+
+
+## Choix du menu du clic droit (MENU_RENAME, MENU_DELETE).
+func menu_chosen(id: int) -> void:
+	if id == MENU_RENAME and renamable:
+		start_rename.call_deferred()
+	elif id == MENU_DELETE and deletable:
+		delete_requested.emit(key)
 
 
 func _get_drag_data(_at: Vector2) -> Variant:
