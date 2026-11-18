@@ -3,11 +3,15 @@ extends TestCase
 ## Vue d'un canvas (LtView) et palette (LtPalette, LtPaletteSlot).
 
 const STORE: String = "user://level_tools_tests_palette.cfg"
+const LAYOUT: String = "user://level_tools_tests_palette_layout.tres"
 
 
 func after_each() -> void:
 	if FileAccess.file_exists(STORE):
 		DirAccess.remove_absolute(STORE)
+	if FileAccess.file_exists(LAYOUT):
+		DirAccess.remove_absolute(LAYOUT)
+	LtPaletteLayout.forget(LAYOUT)
 
 
 # --- LtCellSelection ---
@@ -152,6 +156,51 @@ func test_palette_pages_keys_and_favorites() -> void:
 	again.setup(_items(), ["Ground", "Things"] as Array[String])
 	assert_eq(again.page_items(1), ["wall", "floor"], "order kept")
 	assert_eq(again.page_items(LtPalette.FAVORITES_PAGE), ["chest"], "favorites kept")
+
+
+# --- LtPaletteLayout, LtPaletteEditor ---
+
+func test_palette_layout_pages_and_images() -> void:
+	var layout: LtPaletteLayout = LtPaletteLayout.open(LAYOUT)
+	assert_eq(layout, LtPaletteLayout.open(LAYOUT), "one copy per path")
+	assert_eq(layout.page_names(["Ground", "Things"] as Array[String]), ["Ground", "Things"] as Array[String], "game pages by default")
+	assert_eq(layout.page_of("chest", 2, 2), 2, "game page by default")
+	layout.item_pages["chest"] = 5
+	assert_eq(layout.page_of("chest", 2, 2), 2, "a page that no longer exists: the last one")
+	layout.textures["wall"] = PlaceholderTexture2D.new()
+	assert_not_null(layout.texture_of("wall"))
+	assert_null(layout.texture_of("floor"), "no image: the game's drawing")
+	var holder: Node = add_test_node(Node.new())
+	var cover: Control = LtPaletteLayout.cover(holder, Rect2(0, 0, 30, 10), layout.texture_of("wall"), 10.0)
+	assert_eq(cover.get_child_count(), 3, "one image per cell")
+
+
+func test_palette_editor_add_rename_remove_pages() -> void:
+	var editor: LtPaletteEditor = add_test_node(LtPaletteEditor.new())
+	var items: Array[Dictionary] = _items()
+	items.append({"id": "set_a", "name": "Set A", "page": 0}) # une image seulement, sans page
+	editor.setup(LAYOUT, items, ["Ground", "Things"] as Array[String])
+	editor.add_page("Mechanics")
+	assert_eq(editor.page_names(), ["Ground", "Things", "Mechanics"] as Array[String])
+	editor.set_item_page("wall", 3)
+	editor.rename_page(1, "Blocks")
+	assert_eq(editor.page_names()[0], "Blocks")
+	editor.remove_page(2)
+	assert_eq(editor.page_names(), ["Blocks", "Mechanics"] as Array[String])
+	assert_eq(editor.layout.page_of("chest", 2, 2), 1, "elements of a removed page go to page 1")
+	assert_eq(editor.layout.page_of("wall", 1, 2), 2, "later pages move back one rank")
+	assert_false(editor.layout.item_pages.has("set_a"), "a row without page gets no page")
+	editor.set_item_texture("set_a", PlaceholderTexture2D.new())
+	assert_not_null(editor.layout.texture_of("set_a"))
+	assert_true(FileAccess.file_exists(LAYOUT), "saved at each change")
+	LtPaletteLayout.forget(LAYOUT)
+	var again: LtPaletteLayout = LtPaletteLayout.open(LAYOUT)
+	assert_eq(again.pages, ["Blocks", "Mechanics"] as Array[String], "read back from the file")
+	editor.remove_page(1)
+	editor.remove_page(1)
+	assert_eq(editor.page_names().size(), 1, "one page is always left")
+	editor.reset_layout()
+	assert_eq(editor.page_names(), ["Ground", "Things"] as Array[String], "reset: the game's pages")
 
 
 func _items() -> Array[Dictionary]:

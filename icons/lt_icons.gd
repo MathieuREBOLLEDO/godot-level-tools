@@ -22,3 +22,5 @@ const NEXT: Texture2D = preload("res://addons/level_tools/icons/next.svg")
 ## Bibliothèque : cartes en grille de miniatures, ou en liste.
 const GRID: Texture2D = preload("res://addons/level_tools/icons/grid.svg")
 const LIST: Texture2D = preload("res://addons/level_tools/icons/list.svg")
+## Palette : ouvrir la fenêtre « Edit palette » (LtPaletteEditor).
+const EDIT: Texture2D = preload("res://addons/level_tools/icons/edit.svg")

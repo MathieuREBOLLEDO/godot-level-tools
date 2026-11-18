@@ -25,6 +25,7 @@ Les tests tournent dans un jeu qui a l'addon et le test runner
 | Mode chemin (view/lt_path_editor.gd) | `-Filter path_editor` | plateformes mobiles de Gringo, vagues de BatEmUp |
 | Vue (view/) | `-Filter view` | canvas de Gringo Level, Pinball Modules, Rooms ; vérifier les gestes à la main |
 | Palette (palette/) | `-Filter palette` | palettes de Pinball Modules et des Rooms (ordre et favoris dans user://) |
+| Edit palette (palette/lt_palette_layout.gd, lt_palette_editor.gd) | `-Filter palette_layout`, `-Filter palette_editor` | palette de Gringo Level et du live edit (`-Dir res://game/level`) ; images en jeu : vérifier à la main |
 | Essayer (playtest/) | `-Filter playtest` | lancement du jeu depuis les éditeurs ; côté jeu, la lecture de la demande |
 | Onglets ensemble ↔ pièce (workspace/) | `-Filter workspace` | Map \| Level de Gringo (onglet et niveau rouverts) |
 | Marques (document/lt_flags.gd) | `-Filter flag` | LevelData de Gringo (`-Filter test_level_data`), filtres Flags des bibliothèques |

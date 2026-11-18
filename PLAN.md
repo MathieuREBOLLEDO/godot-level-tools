@@ -256,6 +256,8 @@ référence), pas seulement des briques techniques communes.
           case -> salle sous la souris) ; hors ligne seulement (en ligne la
           pause n'arrête pas le jeu).
 - Ensuite : liens et puzzle (ancienne phase 5).
+- [x] 2026-11-18 (HUB-3907E5, à valider) : fenêtre Edit palette (LtPaletteEditor,
+      LtPaletteLayout en res://) branchée sur la palette de Gringo Level.
 ## Décisions
 - 2026-11-03 : une règle du validateur est un Callable, pas une classe (plus
   court ; le plan parlait de classes).

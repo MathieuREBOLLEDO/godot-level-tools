@@ -130,10 +130,14 @@ Format d'une fiche (garder les noms de champs, une ligne chacun) :
 - type : canvas
 - statut : fait
 - but : choisir l'élément à peindre parmi des pages, avec favoris et ordre retenus.
-- commandes : 1 à 9 puis 0 : cases de la page ; ‹ › : page suivante ; clic droit sur une case : favori ; glisser une case : ordre
+- commandes : 1 à 9 puis 0 : cases de la page ; ‹ › : page suivante ; clic droit sur une case : favori ; glisser une case : ordre ; crayon : fenêtre Edit palette
 - relations :
   - Première page → les favoris
   - store_path → ordre et favoris gardés d'une session à l'autre
+  - Edit palette (LtPaletteEditor) → pages créées, renommées, retirées ; page de chaque élément ; image qui remplace son dessin
+  - Disposition (LtPaletteLayout) → enregistrée dans le projet (res://), commitée, la même pour l'éditeur et le jeu
+  - Gringo → palette de Level et live edit ; image en jeu : roche, sable, métal, cassable, porte, plateformes (les autres éléments : éditeur seulement)
+  - Gringo, sets du sol → une image de 9 × 3 tuiles par set remplace son bloc de ground_tiles.png (éditeur et jeu)
 - liens : Gomme, Pipette
 - docs : docs/guide.md › Canvas sur grille (vue et palette)
 - tests : test_view_palette
