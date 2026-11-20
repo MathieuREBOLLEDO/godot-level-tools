@@ -203,6 +203,27 @@ func test_palette_editor_add_rename_remove_pages() -> void:
 	assert_eq(editor.page_names(), ["Ground", "Things"] as Array[String], "reset: the game's pages")
 
 
+func test_palette_editor_rename_items() -> void:
+	var editor: LtPaletteEditor = add_test_node(LtPaletteEditor.new())
+	editor.setup(LAYOUT, _items(), ["Ground", "Things"] as Array[String])
+	editor.reset_layout()
+	assert_eq(editor.item_name("wall"), "Wall", "the game's name by default")
+	editor.rename_item("wall", "  Stone  ")
+	assert_eq(editor.item_name("wall"), "Stone")
+	assert_eq(editor.layout.name_of("wall", "Wall"), "Stone", "kept in the layout")
+	assert_eq(editor.layout.name_of("floor", "Floor"), "Floor", "others keep the game's name")
+	LtPaletteLayout.forget(LAYOUT)
+	assert_eq(LtPaletteLayout.open(LAYOUT).name_of("wall", "Wall"), "Stone", "read back from the file")
+	editor.setup(LAYOUT, _items(), ["Ground", "Things"] as Array[String])
+	editor.rename_item("wall", "")
+	assert_false(editor.layout.names.has("wall"), "empty: back to the game's name")
+	editor.rename_item("chest", "Chest")
+	assert_false(editor.layout.names.has("chest"), "the game's name is not stored")
+	editor.rename_item("chest", "Box")
+	editor.reset_layout()
+	assert_eq(editor.item_name("chest"), "Chest", "reset: the game's names")
+
+
 func _items() -> Array[Dictionary]:
 	return [
 		{"id": "floor", "name": "Floor", "page": 1, "color": Color.GRAY, "letter": "."},

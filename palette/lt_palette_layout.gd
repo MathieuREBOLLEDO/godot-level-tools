@@ -4,7 +4,8 @@ extends Resource
 
 ## Disposition d'une palette réglée par l'auteur du jeu (fenêtre
 ## LtPaletteEditor), enregistrée dans le projet (res://, commitée) : noms des
-## pages, page de chaque élément, image qui remplace le dessin d'un élément.
+## pages, page et nom de chaque élément, image qui remplace le dessin d'un
+## élément.
 ## Tout ce qui n'y est pas garde la valeur donnée par le jeu (pages et page
 ## par défaut, dessin du code). L'ordre et les favoris restent à la machine
 ## (user://, la palette).
@@ -18,6 +19,8 @@ extends Resource
 @export var item_pages: Dictionary[String, int] = {}
 ## Image de chaque élément (id) qui remplace son dessin.
 @export var textures: Dictionary[String, Texture2D] = {}
+## Nom donné par l'auteur à chaque élément (id), à la place de celui du jeu.
+@export var names: Dictionary[String, String] = {}
 
 static var _opened: Dictionary[String, LtPaletteLayout] = {}
 
@@ -63,11 +66,18 @@ func texture_of(id: String) -> Texture2D:
 	return textures.get(id, null)
 
 
-## Revient aux pages, aux places et aux dessins du jeu.
+## Nom de [param id] : celui de l'auteur, sinon [param default] (le nom du
+## jeu, que l'appelant traduit ; le nom de l'auteur ne se traduit pas).
+func name_of(id: String, default: String) -> String:
+	return names.get(id, default)
+
+
+## Revient aux pages, aux places, aux noms et aux dessins du jeu.
 func reset() -> void:
 	pages.clear()
 	item_pages.clear()
 	textures.clear()
+	names.clear()
 
 
 ## Pose [param texture] sur [param area] (pixels, dans [param parent]) case

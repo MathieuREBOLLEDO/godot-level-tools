@@ -3,7 +3,8 @@ class_name LtPaletteEditor
 extends VBoxContainer
 
 ## Fenêtre « Edit palette » : l'auteur range les éléments d'une palette dans
-## ses pages (créer, renommer, retirer une page ; page de chaque élément) et
+## ses pages (créer, renommer, retirer une page ; page et nom de chaque
+## élément) et
 ## remplace le dessin d'un élément par une image du projet. Chaque changement
 ## est enregistré tout de suite dans la disposition (LtPaletteLayout, res://)
 ## et annoncé par [signal layout_changed] : la palette se refait.
@@ -133,12 +134,39 @@ func set_item_texture(id: String, texture: Texture2D) -> void:
 	_commit()
 
 
+## Nom de l'élément [param id] ; vide ou celui du jeu : le nom du jeu revient.
+func rename_item(id: String, item_name: String) -> void:
+	item_name = item_name.strip_edges()
+	var game_name: String = _game_name(id)
+	if item_name == "" or item_name == game_name:
+		if not layout.names.has(id):
+			return
+		layout.names.erase(id)
+	elif layout.names.get(id, "") == item_name:
+		return
+	else:
+		layout.names[id] = item_name
+	_commit()
+
+
+## Nom affiché de [param id] : celui de l'auteur, sinon celui du jeu traduit.
+func item_name(id: String) -> String:
+	return layout.name_of(id, _game_name(id))
+
+
 func reset_layout() -> void:
 	layout.reset()
 	_commit()
 
 
 # --- Interne ---
+
+func _game_name(id: String) -> String:
+	for entry: Dictionary in _items:
+		if entry["id"] == id:
+			return LtText.t(entry.get("name", id))
+	return id
+
 
 func _has_page(entry: Dictionary) -> bool:
 	return entry.get("page", 1) != 0
@@ -190,7 +218,7 @@ func _build() -> void:
 	var footer: HBoxContainer = HBoxContainer.new()
 	footer.add_theme_constant_override(&"separation", 4)
 	add_child(footer)
-	LtTheme.button(footer, LtText.t("Reset"), LtText.t("Back to the game's pages, places and drawings (removes all changes made here)."), reset_layout)
+	LtTheme.button(footer, LtText.t("Reset"), LtText.t("Back to the game's pages, places, names and drawings (removes all changes made here)."), reset_layout)
 	LtTheme.spacer(footer)
 	var close: Button = LtTheme.button(footer, LtText.t("Close"), LtText.t("Changes are already saved."), closed.emit)
 	close.theme_type_variation = LtTheme.PRIMARY
@@ -253,9 +281,13 @@ func _item_row(entry: Dictionary, names: Array[String]) -> HBoxContainer:
 	preview.custom_minimum_size = Vector2.ONE * PREVIEW_SIZE
 	preview.draw.connect(_draw_preview.bind(preview, entry))
 	row.add_child(preview)
-	var title: Label = LtTheme.label(LtText.t(entry.get("name", id)))
+	var title: LineEdit = LineEdit.new()
+	title.text = item_name(id)
+	title.placeholder_text = _game_name(id)
+	title.tooltip_text = LtText.t("Element name (Enter to rename; empty: the game's name)")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.text_submitted.connect(func(text: String) -> void: rename_item(id, text))
+	title.focus_exited.connect(func() -> void: rename_item(id, title.text))
 	row.add_child(title)
 	var pages: OptionButton = OptionButton.new()
 	pages.focus_mode = Control.FOCUS_NONE
